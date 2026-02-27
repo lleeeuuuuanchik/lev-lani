@@ -1,0 +1,254 @@
+---
+globs: *.js,*.vue,*.ts,*.scss,*.css
+description: Allman coding style and naming conventions
+---
+
+# Coding Style Guidelines
+
+## Allman Style for Braces
+Use Allman style for css curly braces placement:
+- Opening braces on new line, aligned with control structure
+- **Important**: Avoid braces for single-line statements (if, for, while, etc.)
+
+## CSS Formatting Rules
+- Single property: write on one line EVERYTHING!
+- Opening brace: on a new line after selector
+- Closing brace: on a new line after properties
+- **Avoid trailing spaces**
+
+## SCSS Usage Guidelines
+
+### Variables
+- **Always use SCSS variables** for colors, fonts, and media queries
+- **Location**: `@/assets/base/_variables.scss`
+- **Rule**: If a variable doesn't exist, create it instead of using hardcoded values
+- **Examples**: `$primary-color`, `$font-size-large`, `$breakpoint-tablet`
+- **DO NOT IMPORT LOCATIONS**: Do not import `@/assets/base/_variables.scss` everywhere where you use varibles, because we already import it in nuxt.config.ts
+
+### Global Styles
+- **Use global SCSS styles** when possible to avoid duplication
+- **Location**: `@/assets/base/_global.scss`
+- **Rule**: Check existing global styles before writing custom ones
+
+### Mixins
+- **Use mixins** for media queries and transitions
+- **Location**: `@/assets/base/_mixins.scss`
+- **Examples**: `@include mq($tablet)`, `@include transition()`
+- **Rule**: Create new mixins for reusable patterns
+
+### Best Practices
+- **Import order**: Variables → Mixins → Global styles → Component styles
+- **Nesting**: Avoid deep nesting (max 3 levels)
+- **Specificity**: Use BEM methodology to avoid specificity issues
+
+## SCSS `&` Usage Rules
+
+### ✅ DO use `&` for:
+- **Modifiers** (BEM modifiers with `--`): `&--featured`, `&--active`, `&--large`
+- **Pseudo-classes**: `&:hover`, `&:focus`, `&:active`, `&:disabled`
+- **Pseudo-elements**: `&::before`, `&::after`, `&::placeholder`
+- **State classes**: `&.is-active`, `&.is-open`
+
+### ❌ DON'T use `&` for:
+- **BEM elements** (with `__`): Use separate selectors instead of `&__content`, `&__title`, `&__header`
+- **Child elements**: Use separate selectors instead of `& .child-element`
+
+### Examples:
+
+**✅ Correct usage:**
+```scss
+.user-card
+{
+	padding: 20px;
+
+	&:hover
+	{
+		transform: translateY(-5px);
+	}
+
+	&--featured
+	{
+		border-color: #007bff;
+	}
+
+	&.is-active
+	{
+		background: #f8f9fa;
+	}
+}
+
+.user-card__content
+{
+	display: flex;
+	flex-direction: column;
+}
+
+.user-card__title
+{
+	font-size: 1.2em;
+	font-weight: 600;
+}
+```
+
+**❌ Incorrect usage:**
+```scss
+.user-card
+{
+	padding: 20px;
+
+	&__content  // ❌ Don't use & for elements
+	{
+		display: flex;
+	}
+
+	&__title    // ❌ Don't use & for elements
+	{
+		font-size: 1.2em;
+	}
+}
+```
+
+### JavaScript Examples:
+```javascript
+// Functions
+const calculateTotal = (items) => {
+	let total = 0;
+	for (let i = 0; i < items.length; i++)
+		total += items[i].price;
+
+	return total;
+};
+
+// Conditional statements
+if (user.isAuthenticated) {
+	console.log('User authenticated');
+	if (user.hasPermission('admin'))
+		showAdminPanel();
+}
+else
+	redirectToLogin();
+
+// Loops
+for (let i = 0; i < array.length; i++) {
+	if (array[i].isValid)
+		processItem(array[i]);
+}
+
+// Objects
+const userConfig = {
+	name: 'John Doe',
+	email: 'john@example.com',
+	settings:
+	{
+		theme: 'dark',
+		notifications: true
+	}
+};
+```
+
+## Naming Conventions
+
+### Code Naming:
+- **Functions and variables**: camelCase
+- **Constants**: SCREAM_CASE or camelCase
+- **CSS selectors**: BEM methodology
+
+### CSS BEM Naming:
+- **Block**: `.user-card`
+- **Element**: `.user-card__header`
+- **Modifier**: `.user-card--featured`
+- **Global classes**: Use `g-` prefix (e.g., `.g-container`)
+
+### BEM Examples:
+```scss
+// Block
+.user-card
+{
+	padding: 20px;
+	border: 1px solid #ccc;
+
+	// Modifier
+	&--featured
+	{
+		border-color: #007bff;
+		background-color: #f8f9fa;
+	}
+}
+
+// Element
+.user-card__header
+{
+	display: flex;
+	align-items: center;
+	margin-bottom: 15px;
+}
+
+// Global class
+.g-container
+{
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 0 20px;
+}
+```
+
+## Indentation Rules
+- **Use tabs** (4 spaces equivalent)
+- **Consistent indentation** across all files
+- **Inside Vue template/script/style tags**: indent one tab from start
+- **Avoid trailing spaces**
+
+### Vue Component Structure:
+```vue
+<script setup>
+	// props
+	const props = defineProps({
+		title: {
+			type: String,
+			required: true,
+		},
+		obj: {
+			type: Object,
+			default: () => ({
+				id: 1,
+				title: '',
+			});
+		},
+	});
+
+	// emits
+	const emit = defineEmits(['trigger']);
+
+	// variables
+	const userName = ref('Mark');
+
+	// functions
+	const changeUserName = () => userName.value = 'Michael';
+
+	const multiple = (a, b) => {
+		const output = a * b;
+
+		return output
+	};
+</script>
+
+<template>
+	<div class="user-card">
+		<div class="user-card__header">
+			<img class="user-card__header-avatar" src="avatar.jpg" alt="Avatar">
+			<h2 class="user-card__header-title">Иван Иванов</h2>
+		</div>
+		<div class="user-card__content">
+			<p>Описание пользователя...</p>
+		</div>
+	</div>
+</template>
+
+<style lang="scss">
+	.user-card
+	{
+		padding: 20px;
+		border: 1px solid #ccc;
+	}
+</style>
+```

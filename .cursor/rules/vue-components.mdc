@@ -1,0 +1,144 @@
+---
+globs: *.vue
+description: Vue component development guidelines
+---
+
+# Vue3 composition api Component Development
+
+## Component Rules
+- **Component naming**: PascalCase (e.g., `UserCard.vue`, `NewsList.vue`)
+- **Language**: JavaScript (avoid TypeScript for now)
+- **DOM manipulation**: Avoid direct DOM access, use Vue methods and Virtual DOM
+- **Component organization**: Group by functionality in folders
+- **Avoid trailing spaces**
+
+## Component Structure
+- If component is in `components/Blog/Card.vue`, name it `blog-card`
+- Import as `<BlogCard />`
+- Use BEM methodology for CSS classes. Element names should be preserved in nested elements (e.g., user-card__header-avatar instead of just user-card__avatar)
+- Avoid trailing spaces
+- Only use BEM classes or global classes with `g-` prefix in HTML
+- Don`t import basic vue functionality, example: ref, reactive, onMounted e.t.c.
+
+## CSS Formatting Rules
+- Single property: write on one line
+- Opening brace: on a new line after selector
+- Closing brace: on a new line after properties
+
+## Component Examples
+
+### Basic Component Structure:
+```vue
+<script setup>
+	// props
+	const props = defineProps({
+		title: {
+			type: String,
+			required: true,
+		},
+		obj: {
+			type: Object,
+			default: () => ({
+				id: 1,
+				title: '',
+			});
+		},
+	});
+
+	// emits
+	const emit = defineEmits(['trigger']);
+
+	// variables
+	const userName = ref('Mark');
+
+	// functions
+	const changeUserName = () => userName.value = 'Michael';
+
+	const multiple = (a, b) => {
+		const output = a * b;
+
+		return output
+	};
+</script>
+
+<template>
+	<div class="user-card user-card--featured">
+		<div class="user-card__header">
+			<img class="user-card__header-avatar" src="avatar.jpg" alt="Avatar">
+			<h2 class="user-card__header-title">Иван Иванов</h2>
+		</div>
+		<div class="user-card__content">
+			<p>Описание пользователя...</p>
+			<!-- Standard tags without classes are acceptable -->
+			<h3>Дополнительная информация</h3>
+			<p>Еще один параграф</p>
+		</div>
+	</div>
+</template>
+
+<style lang="scss">
+	.user-card
+	{
+		padding: 20px;
+		border: 1px solid #ccc;
+		border-radius: 8px;
+		transition: box-shadow 0.3s ease;
+
+		&--featured
+		{
+			border-color: #007bff;
+			background-color: #f8f9fa;
+
+			.user-card__title { color: #007bff; }
+		}
+
+		&:hover { box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); }
+	}
+
+	.user-card__header
+	{
+		display: flex;
+		align-items: center;
+		margin-bottom: 15px;
+	}
+
+	.user-card__header-avatar
+	{
+		width: 50px;
+		height: 50px;
+		border-radius: 50%;
+		margin-right: 15px;
+	}
+
+	.user-card__header-title
+	{
+		margin: 0;
+		font-size: 1.2em;
+		font-weight: 600;
+	}
+</style>
+```
+
+## Form Validation
+Use Vuelidate for form validation:
+- `@vuelidate/core` @^2.0.3
+- `@vuelidate/validators` @^2.0.4
+
+## State Management
+Use Pinia for global state management:
+- `@pinia/nuxt` @^0.5.1
+
+## UI Components
+Use shadcn-nuxt for UI components:
+- `shadcn-nuxt` @^0.10.4
+
+## Composables
+- Must start with `use-` prefix
+- Place in `/composables` directory
+- Example: `useApi.js`, `useRequest.js`, `useToast.js`
+
+## Component Communication
+- Use props for parent-to-child data
+- Use `emit` for child-to-parent events
+- Use Pinia stores for global state
+- Use provide/inject for deeply nested components
