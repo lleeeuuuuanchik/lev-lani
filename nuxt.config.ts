@@ -25,6 +25,8 @@ export default defineNuxtConfig({
 		adminEmail:      process.env.NUXT_ADMIN_EMAIL,      // логин администратора
 		adminPassword:   process.env.NUXT_ADMIN_PASSWORD,   // пароль администратора
 		dbFileName:      process.env.NUXT_DB_FILE_NAME || './data/levlani.db', // путь к SQLite
+		tgBotToken:      process.env.NUXT_TG_BOT_TOKEN,    // токен Telegram-бота для уведомлений
+		tgChatId:        process.env.NUXT_TG_CHAT_ID,      // ID чата куда слать уведомления
 		// public.* попадают в клиент — используем только для не-секретных настроек
 		public: {
 			siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://levlani.ru',

@@ -1,14 +1,17 @@
 <script setup>
-// ─── Секция отзывов — карусель ────────────────────────────────────────────────
-// Загружает одобренные отзывы через GET /api/reviews (approved=1 фильтр на сервере).
-// Показывает карусель с навигацией (dots + стрелки) — скрывается если отзыв один.
-// Автоматический переход каждые 4s (только при total > 1).
-// Гости могут оставить отзыв через встроенную форму → POST /api/reviews
-// (отзыв сохраняется с approved=0, ждёт одобрения в /admin/reviews).
+// ─── Секция отзывов — Swiper карусель ─────────────────────────────────────────
+// Отзывы загружаются через GET /api/reviews (только approved=1).
+// Swiper: loop + autoplay 5s + кастомная навигация + pagination dots.
+// Форма добавления отзыва — в <ClientOnly> (Vuelidate требует DOM).
+// Schema.org Review microdata — на каждом слайде.
 
+import { Swiper, SwiperSlide } from 'swiper/vue';
+import { Autoplay, Navigation, Pagination } from 'swiper/modules';
 import { useToast } from '@/composables/useToast';
 
 const { showSuccess, showError } = useToast();
+
+const modules = [Autoplay, Navigation, Pagination];
 
 const serviceOptions = [
 	{ value: 'Стрижка', label: 'Стрижка' },
@@ -25,46 +28,18 @@ const showForm = ref(false);
 const loading = ref(false);
 const form = reactive({ author: '', service: '', text: '', rating: 5 });
 
-// Slider state
-const current = ref(0);
-const isAnimating = ref(false);
-const direction = ref(1); // 1 = forward, -1 = backward
-
-const slidesPerView = ref(1);
+// Ref на инстанс Swiper — используется для кастомных кнопок навигации
+const swiperInstance = ref(null);
+const onSwiper = (swiper) => { swiperInstance.value = swiper; };
 
 const total = computed(() => reviews.value?.length ?? 0);
-
-const goTo = (idx) => {
-	if (isAnimating.value || idx === current.value) return;
-	direction.value = idx > current.value ? 1 : -1;
-	isAnimating.value = true;
-	current.value = (idx + total.value) % total.value;
-	setTimeout(() => { isAnimating.value = false; }, 500);
-};
-
-const prev = () => goTo(current.value - 1);
-const next = () => goTo(current.value + 1);
-
-// Auto-advance
-let autoTimer;
-const startAuto = () => {
-	clearInterval(autoTimer);
-	autoTimer = setInterval(() => next(), 5000);
-};
-const stopAuto = () => clearInterval(autoTimer);
-
-onMounted(() => { if (total.value > 1) startAuto(); });
-onUnmounted(() => stopAuto());
 
 const submit = async () => {
 	if (!form.author || !form.service || form.text.length < 10) return;
 	loading.value = true;
 	try {
-		await $fetch('/api/reviews', {
-			method: 'POST',
-			body: { ...form },
-		});
-		showSuccess('Спасибо за отзыв! Он появится в списке.');
+		await $fetch('/api/reviews', { method: 'POST', body: { ...form } });
+		showSuccess('Спасибо за отзыв! Он появится после проверки.');
 		form.author = ''; form.service = ''; form.text = ''; form.rating = 5;
 		showForm.value = false;
 		await refresh();
@@ -135,8 +110,7 @@ const initial = (name) => name?.charAt(0)?.toUpperCase() ?? '?';
 							<!-- Stars selector -->
 							<div class="rev__stars-pick">
 								<button
-									v-for="s in 5"
-									:key="s"
+									v-for="s in 5" :key="s"
 									class="rev__star-btn"
 									:class="{ 'is-active': s <= form.rating }"
 									@click="form.rating = s"
@@ -150,29 +124,13 @@ const initial = (name) => name?.charAt(0)?.toUpperCase() ?? '?';
 							</div>
 
 							<div class="rev__form-grid">
-								<UiInput
-									label="Ваше имя"
-									placeholder="Анна К."
-									:value="form.author"
-									@update:value="form.author = $event"
-								/>
-								<UiSelect
-									label="Услуга"
-									placeholder="Выберите услугу"
-									:options="serviceOptions"
-									:value="form.service"
-									@update:value="form.service = $event"
-								/>
+								<UiInput label="Ваше имя" placeholder="Анна К." :value="form.author" @update:value="form.author = $event" />
+								<UiSelect label="Услуга" placeholder="Выберите услугу" :options="serviceOptions" :value="form.service" @update:value="form.service = $event" />
 							</div>
 
 							<div class="rev__field-wrap">
 								<label class="rev__field-label">Отзыв</label>
-								<textarea
-									class="rev__textarea"
-									v-model="form.text"
-									placeholder="Расскажите о вашем опыте..."
-									rows="4"
-								/>
+								<textarea class="rev__textarea" v-model="form.text" placeholder="Расскажите о вашем опыте..." rows="4" />
 							</div>
 
 							<UiButton :disabled="loading || !form.author || !form.service || form.text.length < 10" @click="submit" class="rev__submit">
@@ -183,96 +141,85 @@ const initial = (name) => name?.charAt(0)?.toUpperCase() ?? '?';
 				</div>
 			</Transition>
 
-			<!-- Slider -->
-			<div
-				v-if="reviews?.length"
-				class="rev__slider"
-				@mouseenter="stopAuto"
-				@mouseleave="startAuto"
-			>
-				<!-- Main slide area -->
-				<div class="rev__track">
-					<TransitionGroup :name="direction === 1 ? 'slide-left' : 'slide-right'" tag="div" class="rev__track-inner">
-						<!-- Schema.org Review — даёт Google звёздочки в поисковой выдаче -->
-						<div
-							v-for="(r, i) in reviews"
-							v-show="i === current"
-							:key="r.id"
-							class="rev__card"
-							itemscope itemtype="https://schema.org/Review"
-						>
-							<!-- Скрытые мета-данные отзыва: рейтинг, дата, предмет -->
-							<div itemprop="reviewRating" itemscope itemtype="https://schema.org/Rating" style="display:none">
-								<meta itemprop="ratingValue" :content="String(r.rating ?? 5)">
-								<meta itemprop="bestRating"  content="5">
-								<meta itemprop="worstRating" content="1">
-							</div>
-							<meta itemprop="datePublished" :content="(() => { const ts = Number(r.createdAt); if (!ts || isNaN(ts)) return ''; const d = new Date(ts * 1000); return isNaN(d.getTime()) ? '' : d.toISOString().split('T')[0]; })()">
-							<link itemprop="itemReviewed" href="https://levlani.ru/#business">
-
-							<!-- Quote mark bg -->
-							<div class="rev__card-quote-bg" aria-hidden>"</div>
-
-							<div class="rev__card-top">
-								<div class="rev__card-stars">
-									<svg v-for="s in r.rating" :key="s" width="14" height="14" viewBox="0 0 13 13" fill="none">
-										<path d="M6.5 1l1.5 3 3.3.5-2.4 2.3.6 3.3L6.5 8.7 3 10.1l.6-3.3L1.2 4.5 4.5 4z" fill="url(#rs-a)"/>
-										<defs>
-											<linearGradient id="rs-a" x1="1" y1="1" x2="12" y2="12">
-												<stop offset="0%" stop-color="#c4818b"/>
-												<stop offset="100%" stop-color="#e8d5be"/>
-											</linearGradient>
-										</defs>
-									</svg>
-									<svg v-for="s in (5 - r.rating)" :key="`e${s}`" width="14" height="14" viewBox="0 0 13 13" fill="none">
-										<path d="M6.5 1l1.5 3 3.3.5-2.4 2.3.6 3.3L6.5 8.7 3 10.1l.6-3.3L1.2 4.5 4.5 4z" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
-									</svg>
+			<!-- Swiper slider -->
+			<div v-if="reviews?.length" class="rev__slider">
+				<ClientOnly>
+					<Swiper
+						class="rev__swiper"
+						:modules="modules"
+						:slides-per-view="1"
+						:space-between="0"
+						:loop="total > 1"
+						:autoplay="total > 1 ? { delay: 5000, disableOnInteraction: false, pauseOnMouseEnter: true } : false"
+						:pagination="total > 1 ? { clickable: true, el: '.rev__pagination' } : false"
+						:allow-touch-move="total > 1"
+						@swiper="onSwiper"
+					>
+						<SwiperSlide v-for="r in reviews" :key="r.id">
+							<!-- Schema.org Review microdata -->
+							<div class="rev__card" itemscope itemtype="https://schema.org/Review">
+								<div itemprop="reviewRating" itemscope itemtype="https://schema.org/Rating" style="display:none">
+									<meta itemprop="ratingValue" :content="String(r.rating ?? 5)">
+									<meta itemprop="bestRating"  content="5">
+									<meta itemprop="worstRating" content="1">
 								</div>
-								<span class="rev__card-date">{{ formatDate(r.createdAt) }}</span>
-							</div>
+								<meta itemprop="datePublished" :content="(() => { const ts = Number(r.createdAt); if (!ts || isNaN(ts)) return ''; const d = new Date(ts * 1000); return isNaN(d.getTime()) ? '' : d.toISOString().split('T')[0]; })()">
+								<link itemprop="itemReviewed" href="https://levlani.ru/#business">
 
-							<p class="rev__card-text" itemprop="reviewBody">{{ r.text }}</p>
+								<!-- Декоративная большая кавычка -->
+								<div class="rev__card-quote-bg" aria-hidden>"</div>
 
-							<div class="rev__card-author" itemprop="author" itemscope itemtype="https://schema.org/Person">
-								<div class="rev__card-avatar">{{ initial(r.author) }}</div>
-								<div>
-									<div class="rev__card-name" itemprop="name">{{ r.author }}</div>
-									<div class="rev__card-service">{{ r.service }}</div>
+								<div class="rev__card-top">
+									<div class="rev__card-stars">
+										<svg v-for="s in r.rating" :key="s" width="14" height="14" viewBox="0 0 13 13" fill="none">
+											<path d="M6.5 1l1.5 3 3.3.5-2.4 2.3.6 3.3L6.5 8.7 3 10.1l.6-3.3L1.2 4.5 4.5 4z" fill="url(#rs-a)"/>
+											<defs><linearGradient id="rs-a" x1="1" y1="1" x2="12" y2="12"><stop offset="0%" stop-color="#c4818b"/><stop offset="100%" stop-color="#e8d5be"/></linearGradient></defs>
+										</svg>
+										<svg v-for="s in (5 - r.rating)" :key="`e${s}`" width="14" height="14" viewBox="0 0 13 13" fill="none">
+											<path d="M6.5 1l1.5 3 3.3.5-2.4 2.3.6 3.3L6.5 8.7 3 10.1l.6-3.3L1.2 4.5 4.5 4z" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+										</svg>
+									</div>
+									<span class="rev__card-date">{{ formatDate(r.createdAt) }}</span>
+								</div>
+
+								<p class="rev__card-text" itemprop="reviewBody">{{ r.text }}</p>
+
+								<div class="rev__card-author" itemprop="author" itemscope itemtype="https://schema.org/Person">
+									<div class="rev__card-avatar">{{ initial(r.author) }}</div>
+									<div>
+										<div class="rev__card-name" itemprop="name">{{ r.author }}</div>
+										<div class="rev__card-service">{{ r.service }}</div>
+									</div>
 								</div>
 							</div>
+						</SwiperSlide>
+					</Swiper>
+
+					<!-- Controls — только если больше одного отзыва -->
+					<div v-if="total > 1" class="rev__controls">
+						<div class="rev__pagination" />
+						<div class="rev__arrows">
+							<button class="rev__arrow" @click="swiperInstance?.slidePrev()" aria-label="Предыдущий отзыв">
+								<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+									<path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+								</svg>
+							</button>
+							<button class="rev__arrow" @click="swiperInstance?.slideNext()" aria-label="Следующий отзыв">
+								<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+									<path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+								</svg>
+							</button>
 						</div>
-					</TransitionGroup>
-				</div>
-
-				<!-- Controls — hidden when only one review -->
-				<div v-if="total > 1" class="rev__controls">
-					<!-- Dots -->
-					<div class="rev__dots">
-						<button
-							v-for="(r, i) in reviews"
-							:key="r.id"
-							class="rev__dot"
-							:class="{ 'is-active': i === current }"
-							@click="goTo(i)"
-							:aria-label="`Перейти к отзыву ${i + 1}`"
-						/>
 					</div>
 
-					<!-- Arrows -->
-					<div class="rev__arrows">
-						<button class="rev__arrow" @click="prev" aria-label="Предыдущий отзыв">
-							<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-								<path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-							</svg>
-						</button>
-						<span class="rev__counter">{{ current + 1 }} / {{ total }}</span>
-						<button class="rev__arrow" @click="next" aria-label="Следующий отзыв">
-							<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-								<path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-							</svg>
-						</button>
-					</div>
-				</div>
+					<template #fallback>
+						<div class="rev__card rev__card--skeleton">
+							<UiSkeleton style="height:20px;width:100px;border-radius:4px" />
+							<UiSkeleton style="height:80px;border-radius:8px;margin-top:16px" />
+							<UiSkeleton style="height:44px;width:180px;border-radius:8px;margin-top:24px" />
+						</div>
+					</template>
+				</ClientOnly>
 			</div>
 
 			<!-- Empty state -->
@@ -285,6 +232,9 @@ const initial = (name) => name?.charAt(0)?.toUpperCase() ?? '?';
 </template>
 
 <style lang="scss">
+// ─── Swiper CSS (базовый) ─────────────────────────────────────
+@use 'swiper/css';
+
 .rev {
 	background: $bg2;
 	position: relative;
@@ -412,10 +362,7 @@ const initial = (name) => name?.charAt(0)?.toUpperCase() ?? '?';
 }
 
 // ─── Form ────────────────────────────────────────────────────
-.rev__form-wrap {
-	overflow: hidden;
-	margin-bottom: 40px;
-}
+.rev__form-wrap { overflow: hidden; margin-bottom: 40px; }
 
 .rev__form {
 	background: rgba(255,255,255,0.025);
@@ -437,10 +384,7 @@ const initial = (name) => name?.charAt(0)?.toUpperCase() ?? '?';
 	margin: 0;
 }
 
-.rev__stars-pick {
-	display: flex;
-	gap: 4px;
-}
+.rev__stars-pick { display: flex; gap: 4px; }
 
 .rev__star-btn {
 	background: none;
@@ -463,11 +407,7 @@ const initial = (name) => name?.charAt(0)?.toUpperCase() ?? '?';
 	@include mq(0, $tablet) { grid-template-columns: 1fr; }
 }
 
-.rev__field-wrap {
-	display: flex;
-	flex-direction: column;
-	gap: 6px;
-}
+.rev__field-wrap { display: flex; flex-direction: column; gap: 6px; }
 
 .rev__field-label {
 	font-size: 0.78rem;
@@ -495,31 +435,17 @@ const initial = (name) => name?.charAt(0)?.toUpperCase() ?? '?';
 	&::placeholder { color: $textMuted; }
 }
 
-.rev__submit {
-	align-self: flex-start;
-}
+.rev__submit { align-self: flex-start; }
 
-// ─── Slider ──────────────────────────────────────────────────
-.rev__slider {
-	display: flex;
-	flex-direction: column;
-	gap: 32px;
-}
-
-.rev__track {
-	position: relative;
-	overflow: hidden;
-}
-
-.rev__track-inner {
-	display: flex;
-	position: relative;
+// ─── Swiper ──────────────────────────────────────────────────
+.rev__swiper {
+	width: 100%;
+	// Отступ снизу под pagination dots
+	padding-bottom: 0 !important;
 }
 
 // Slide card
 .rev__card {
-	width: 100%;
-	flex-shrink: 0;
 	background: rgba(255,255,255,0.025);
 	border: 1px solid $border;
 	border-radius: 24px;
@@ -529,11 +455,13 @@ const initial = (name) => name?.charAt(0)?.toUpperCase() ?? '?';
 	gap: 20px;
 	position: relative;
 	overflow: hidden;
+	height: 100%;
+	box-sizing: border-box;
 	@include transition();
 
-	&:hover {
-		border-color: rgba(196,129,139,0.18);
-	}
+	&:hover { border-color: rgba(196,129,139,0.18); }
+
+	&--skeleton { min-height: 280px; }
 
 	@include mq(0, $tablet) { padding: 28px 20px; }
 }
@@ -559,10 +487,7 @@ const initial = (name) => name?.charAt(0)?.toUpperCase() ?? '?';
 	gap: 12px;
 }
 
-.rev__card-stars {
-	display: flex;
-	gap: 3px;
-}
+.rev__card-stars { display: flex; gap: 3px; }
 
 .rev__card-date {
 	font-size: 0.75rem;
@@ -615,53 +540,44 @@ const initial = (name) => name?.charAt(0)?.toUpperCase() ?? '?';
 	margin-top: 2px;
 }
 
-// Controls bar
+// ─── Controls ────────────────────────────────────────────────
 .rev__controls {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 	gap: 20px;
+	margin-top: 28px;
 
 	@include mq(0, $tablet) { flex-direction: column-reverse; align-items: flex-start; }
 }
 
-.rev__dots {
+// Кастомные pagination dots (переопределяем Swiper)
+.rev__pagination {
 	display: flex;
 	gap: 8px;
 	align-items: center;
-}
 
-.rev__dot {
-	width: 6px; height: 6px;
-	border-radius: 100px;
-	border: none;
-	background: rgba(255,255,255,0.12);
-	cursor: pointer;
-	@include transition();
-	padding: 0;
+	// Swiper генерирует .swiper-pagination-bullet внутри нашего контейнера
+	.swiper-pagination-bullet {
+		width: 6px; height: 6px;
+		border-radius: 100px;
+		background: rgba(255,255,255,0.12);
+		opacity: 1;
+		@include transition();
+		margin: 0 !important;
+	}
 
-	&.is-active {
+	.swiper-pagination-bullet-active {
 		width: 24px;
 		background: linear-gradient(90deg, $roseGold, $champagne);
 		box-shadow: 0 0 10px rgba(196,129,139,0.5);
-	}
-
-	&:hover:not(.is-active) {
-		background: rgba(196,129,139,0.3);
 	}
 }
 
 .rev__arrows {
 	display: flex;
 	align-items: center;
-	gap: 12px;
-}
-
-.rev__counter {
-	font-size: 0.82rem;
-	color: $textMuted;
-	min-width: 36px;
-	text-align: center;
+	gap: 10px;
 }
 
 .rev__arrow {
@@ -700,19 +616,4 @@ const initial = (name) => name?.charAt(0)?.toUpperCase() ?? '?';
 .rev-form-leave-active { transition: opacity 0.25s ease, transform 0.25s ease; }
 .rev-form-enter-from,
 .rev-form-leave-to { opacity: 0; transform: translateY(-12px); }
-
-// ─── Slide transitions ────────────────────────────────────────
-.slide-left-enter-active,
-.slide-left-leave-active,
-.slide-right-enter-active,
-.slide-right-leave-active {
-	transition: opacity 0.45s ease, transform 0.45s ease;
-	position: absolute;
-	width: 100%;
-}
-
-.slide-left-enter-from { opacity: 0; transform: translateX(40px); }
-.slide-left-leave-to  { opacity: 0; transform: translateX(-40px); }
-.slide-right-enter-from { opacity: 0; transform: translateX(-40px); }
-.slide-right-leave-to  { opacity: 0; transform: translateX(40px); }
 </style>
