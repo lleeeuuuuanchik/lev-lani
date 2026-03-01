@@ -131,6 +131,54 @@ $champagneMuted: var(--champagne-muted, rgba(232, 213, 190, 0.55));
 	--border-focus:     rgba(201, 160, 48, 0.5);
 }
 
+// ─── Theme 6: Cherry Blossom ──────────────────────────────────
+.theme-cherry, [data-theme="cherry"] {
+	--accent:           #b5445a;
+	--accent-light:     #cc6070;
+	--accent-dark:      #8c2e40;
+	--accent-glow:      rgba(181, 68, 90, 0.18);
+	--accent-rgb:       181, 68, 90;
+	--champagne:        #f0d0d8;
+	--champagne-muted:  rgba(240, 208, 216, 0.55);
+	--border-focus:     rgba(181, 68, 90, 0.5);
+}
+
+// ─── Theme 7: Midnight Indigo ─────────────────────────────────
+.theme-midnight, [data-theme="midnight"] {
+	--accent:           #6e7cc8;
+	--accent-light:     #8c98dc;
+	--accent-dark:      #505eaa;
+	--accent-glow:      rgba(110, 124, 200, 0.18);
+	--accent-rgb:       110, 124, 200;
+	--champagne:        #c0c8f0;
+	--champagne-muted:  rgba(192, 200, 240, 0.55);
+	--border-focus:     rgba(110, 124, 200, 0.5);
+}
+
+// ─── Theme 8: Copper ──────────────────────────────────────────
+.theme-copper, [data-theme="copper"] {
+	--accent:           #b87040;
+	--accent-light:     #cc8c58;
+	--accent-dark:      #8c5028;
+	--accent-glow:      rgba(184, 112, 64, 0.18);
+	--accent-rgb:       184, 112, 64;
+	--champagne:        #f0d0a0;
+	--champagne-muted:  rgba(240, 208, 160, 0.55);
+	--border-focus:     rgba(184, 112, 64, 0.5);
+}
+
+// ─── Theme 9: Arctic Mint ─────────────────────────────────────
+.theme-arctic, [data-theme="arctic"] {
+	--accent:           #5bbab0;
+	--accent-light:     #78d0c6;
+	--accent-dark:      #3c9890;
+	--accent-glow:      rgba(91, 186, 176, 0.18);
+	--accent-rgb:       91, 186, 176;
+	--champagne:        #b8ecea;
+	--champagne-muted:  rgba(184, 236, 234, 0.55);
+	--border-focus:     rgba(91, 186, 176, 0.5);
+}
+
 // ============================================
 // BREAKPOINTS & TYPOGRAPHY
 // ============================================

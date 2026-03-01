@@ -92,7 +92,8 @@ const submit = async () => {
 						</div>
 					</a>
 				<!-- Адрес с PostalAddress микроразметкой -->
-					<div class="contact__detail" itemprop="address" itemscope itemtype="https://schema.org/PostalAddress">
+					<a class="contact__detail contact__detail--link" itemprop="address" itemscope itemtype="https://schema.org/PostalAddress"
+						href="https://2gis.ru/vladikavkaz/firm/70000001034069266" target="_blank" rel="noopener noreferrer">
 						<meta itemprop="streetAddress"   content="ул. Астана Кесаева, 4">
 						<meta itemprop="addressLocality" content="Владикавказ">
 						<meta itemprop="addressRegion"   content="Северная Осетия — Алания">
@@ -108,7 +109,7 @@ const submit = async () => {
 							<div class="contact__detail-label">Адрес</div>
 							<div class="contact__detail-value">ул. Астана Кесаева, 4, Владикавказ</div>
 						</div>
-					</div>
+					</a>
 				<!-- openingHours: Google использует для карточки бизнеса -->
 					<div class="contact__detail">
 						<meta itemprop="openingHours" content="Mo-Su 09:00-19:00">
@@ -246,7 +247,11 @@ const submit = async () => {
 	text-decoration: none;
 	@include transition();
 
-	&:hover { border-color: $borderHover; background: rgba(255,255,255,0.04); }
+	&:hover, &--link:hover {
+		border-color: rgba(196,129,139,0.3);
+		background: rgba(196,129,139,0.05);
+		.contact__detail-icon { background: rgba(196,129,139,0.18); }
+	}
 }
 
 .contact__detail-icon {

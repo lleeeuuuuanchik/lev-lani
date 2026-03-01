@@ -1,15 +1,15 @@
 <script setup>
 // ─── Футер сайта ──────────────────────────────────────────────────────────────
 // 3-колоночная навигация + брендовый блок с логотипом и соцсетями.
-// Ссылки "Услуги" / "Записаться" / "Как мы работаем" — якоря на главной странице.
-// Год в копирайте подставляется динамически.
+// Услуги берутся из /api/services (SQLite). Год динамический.
 
 const scrollTo = (id) => {
 	document.querySelector(id)?.scrollIntoView({ behavior: 'smooth' });
 };
 
-// Актуальный год для строки © в футере
 const year = new Date().getFullYear();
+
+const { data: services } = useFetch('/api/services', { default: () => [] });
 </script>
 
 <template>
@@ -53,11 +53,9 @@ const year = new Date().getFullYear();
 					<div class="footer__col">
 						<span class="footer__col-title">Услуги</span>
 						<ul class="footer__list">
-							<li><a class="footer__link" @click.prevent="scrollTo('#services')">Стрижка</a></li>
-							<li><a class="footer__link" @click.prevent="scrollTo('#services')">Окрашивание</a></li>
-							<li><a class="footer__link" @click.prevent="scrollTo('#services')">Маникюр</a></li>
-							<li><a class="footer__link" @click.prevent="scrollTo('#services')">Брови и ресницы</a></li>
-							<li><a class="footer__link" @click.prevent="scrollTo('#services')">Уход за лицом</a></li>
+							<li v-for="s in services" :key="s.id">
+								<a class="footer__link" @click.prevent="scrollTo('#services')">{{ s.title }}</a>
+							</li>
 						</ul>
 					</div>
 
@@ -78,7 +76,16 @@ const year = new Date().getFullYear();
 									+7 (962) 748-83-83
 								</a>
 							</li>
-							<li><span class="footer__text">ул. Астана Кесаева, 4, Владикавказ</span></li>
+							<li>
+								<a
+									href="https://2gis.ru/vladikavkaz/firm/70000001034069266"
+									target="_blank"
+									rel="noopener noreferrer"
+									class="footer__link footer__link--address"
+								>
+									ул. Астана Кесаева, 4
+								</a>
+							</li>
 							<li><span class="footer__text">Ежедневно 9:00–19:00</span></li>
 						</ul>
 					</div>
@@ -215,6 +222,18 @@ const year = new Date().getFullYear();
 	@include transition();
 
 	&:hover { color: $textPrimary; }
+
+	&--address {
+		display: inline-flex;
+		align-items: center;
+		gap: 5px;
+		color: $textMuted;
+		&::before {
+			content: '📍';
+			font-size: 0.75rem;
+		}
+		&:hover { color: $roseGoldLight; }
+	}
 }
 
 .footer__text {

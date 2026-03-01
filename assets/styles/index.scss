@@ -17,12 +17,26 @@ body {
 
 a { text-decoration: none; }
 
-// transition
+// Vue default transition
 .v-enter-active,
 .v-leave-active { transition: opacity 0.2s ease; }
 
 .v-enter-from,
 .v-leave-to { opacity: 0; }
+
+// Nuxt page transition
+.page-enter-active,
+.page-leave-active {
+	transition: opacity 0.22s ease, transform 0.22s ease;
+}
+.page-enter-from {
+	opacity: 0;
+	transform: translateY(10px);
+}
+.page-leave-to {
+	opacity: 0;
+	transform: translateY(-6px);
+}
 
 // toaster
 .v-toast { z-index: 999999 !important; padding: 10px !important; }

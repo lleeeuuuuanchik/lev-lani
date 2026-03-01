@@ -236,19 +236,41 @@ onMounted(() => {
 	&:first-child {
 		border-radius: 16px 0 0 16px;
 
+		// 2-col (tablet..laptop): only top-left corner
 		@include mq(0, $laptop) {
-			border-radius: 16px 16px 0 0;
+			border-radius: 16px 0 0 0;
 		}
 
+		// 1-col: top two corners
 		@include mq(0, $tablet) {
 			border-radius: 16px 16px 0 0;
+		}
+	}
+
+	// 2-col: top-right corner for card #2
+	&:nth-child(2) {
+		@include mq($tablet, $laptop) {
+			border-radius: 0 16px 0 0;
+		}
+	}
+
+	// 2-col: bottom-left corner for card #3
+	&:nth-child(3) {
+		@include mq($tablet, $laptop) {
+			border-radius: 0 0 0 16px;
 		}
 	}
 
 	&:last-child {
 		border-radius: 0 16px 16px 0;
 
+		// 2-col: only bottom-right corner
 		@include mq(0, $laptop) {
+			border-radius: 0 0 16px 0;
+		}
+
+		// 1-col: both bottom corners
+		@include mq(0, $tablet) {
 			border-radius: 0 0 16px 16px;
 		}
 	}

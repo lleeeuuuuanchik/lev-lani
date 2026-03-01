@@ -1,6 +1,11 @@
 <script setup>
 import { LayoutGrid, Scissors, Users, Star, Palette, LogOut } from 'lucide-vue-next';
 
+const nuxtApp = useNuxtApp();
+const loading = ref(false);
+nuxtApp.hook('page:start',  () => loading.value = true);
+nuxtApp.hook('page:finish', () => loading.value = false);
+
 const logout = async () => {
 	await $fetch('/api/auth/logout', { method: 'POST' });
 	await navigateTo('/admin/login');
@@ -45,6 +50,12 @@ const logout = async () => {
 
 		<slot />
 	</div>
+
+	<ClientOnly>
+		<Teleport to="body">
+			<HugePreloader v-if="loading" />
+		</Teleport>
+	</ClientOnly>
 </template>
 
 <style lang="scss">
@@ -109,16 +120,41 @@ const logout = async () => {
 	color: $textSecondary;
 	cursor: pointer;
 	text-decoration: none;
-	@include transition();
+	position: relative;
+	transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+	border: 1px solid transparent;
 
-	svg { flex-shrink: 0; }
-	&:hover { background: rgba(255,255,255,0.04); color: $textPrimary; }
+	svg { flex-shrink: 0; transition: color 0.25s ease; }
+
+	// Active indicator bar
+	&::before {
+		content: '';
+		position: absolute;
+		left: 0; top: 50%;
+		transform: translateY(-50%) scaleY(0);
+		width: 3px; height: 16px;
+		background: $roseGold;
+		border-radius: 0 2px 2px 0;
+		box-shadow: 0 0 8px var(--accent-glow);
+		transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+	}
+
+	&:hover {
+		background: rgba(255,255,255,0.04);
+		color: $textPrimary;
+	}
 
 	&--active {
-		background: rgba(196,129,139,0.1);
-		border: 1px solid rgba(196,129,139,0.2);
+		background: rgba(196,129,139,0.08);
+		border-color: rgba(196,129,139,0.18);
 		color: $roseGoldLight;
+		box-shadow: inset 0 0 20px rgba(196,129,139,0.04);
+
 		svg { color: $roseGold; }
+
+		&::before {
+			transform: translateY(-50%) scaleY(1);
+		}
 	}
 }
 

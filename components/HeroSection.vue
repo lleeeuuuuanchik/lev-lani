@@ -52,13 +52,13 @@ onMounted(async () => {
 	);
 
 	gsap.fromTo('.hero__pill',
-		{ opacity: 0, scale: 0.7 },
-		{ opacity: 1, scale: 1, duration: 0.6, ease: 'back.out(1.7)', stagger: 0.15, delay: 1.4 }
+		{ opacity: 0 },
+		{ opacity: 1, duration: 0.9, ease: 'power2.out', stagger: 0.18, delay: 1.4 }
 	);
 
 	gsap.fromTo('.hero__chip',
-		{ opacity: 0, scale: 0.7, y: 10 },
-		{ opacity: 1, scale: 1, y: 0, duration: 0.6, ease: 'back.out(1.7)', stagger: 0.18, delay: 1.6 }
+		{ opacity: 0 },
+		{ opacity: 1, duration: 0.9, ease: 'power2.out', stagger: 0.2, delay: 1.6 }
 	);
 
 	heroRef.value?.addEventListener('mousemove', onMouseMove);
@@ -146,9 +146,6 @@ onUnmounted(() => {
 					<!-- Star field -->
 					<div class="hero__stars" aria-hidden />
 
-					<!-- Comet -->
-					<div class="hero__comet" aria-hidden />
-
 					<!-- Nebula -->
 					<div class="hero__nebula hero__nebula--1" aria-hidden />
 					<div class="hero__nebula hero__nebula--2" aria-hidden />
@@ -205,7 +202,11 @@ onUnmounted(() => {
 						<span class="hero__chip-lbl">клиентов</span>
 					</div>
 					<div class="hero__chip hero__chip--founder">
-						<div class="hero__chip-avatar">М</div>
+						<div class="hero__chip-avatar">
+							<ClientOnly>
+								<img src="/images/founder.jpg" alt="Меладзе Тея" class="hero__chip-avatar-img" />
+							</ClientOnly>
+						</div>
 						<div class="hero__chip-info">
 							<span class="hero__chip-name">Меладзе Тея</span>
 							<span class="hero__chip-role">Основатель · Art Director</span>
@@ -235,6 +236,125 @@ onUnmounted(() => {
 </template>
 
 <style lang="scss">
+// ─── Цвета планеты — меняются при смене темы ─────────────────
+:root, [data-theme="rose"] {
+	--sphere-a:    rgba(215, 160, 170, 0.95);
+	--sphere-b:    rgba(168,  90, 108, 0.90);
+	--sphere-c:    rgba( 65,  12,  28, 0.95);
+	--glow-45:     rgba(196, 129, 139, 0.45);
+	--glow-60:     rgba(196, 129, 139, 0.60);
+	--glow-18:     rgba(196, 129, 139, 0.18);
+	--glow-07:     rgba(196, 129, 139, 0.07);
+	--orbit-1:     rgba(196, 129, 139, 0.30);
+	--orbit-2:     rgba(232, 213, 190, 0.18);
+	--orbit-3:     rgba(196, 129, 139, 0.14);
+	--dot-rgb:     rgba(196, 129, 139, 1);
+}
+[data-theme="violet"] {
+	--sphere-a:    rgba(180, 148, 224, 0.95);
+	--sphere-b:    rgba(122,  84, 168, 0.90);
+	--sphere-c:    rgba( 30,  10,  50, 0.95);
+	--glow-45:     rgba(155, 114, 207, 0.45);
+	--glow-60:     rgba(155, 114, 207, 0.60);
+	--glow-18:     rgba(155, 114, 207, 0.18);
+	--glow-07:     rgba(155, 114, 207, 0.07);
+	--orbit-1:     rgba(155, 114, 207, 0.30);
+	--orbit-2:     rgba(216, 200, 240, 0.18);
+	--orbit-3:     rgba(155, 114, 207, 0.14);
+	--dot-rgb:     rgba(155, 114, 207, 1);
+}
+[data-theme="sage"] {
+	--sphere-a:    rgba(150, 192, 166, 0.95);
+	--sphere-b:    rgba( 92, 136, 110, 0.90);
+	--sphere-c:    rgba( 10,  30,  18, 0.95);
+	--glow-45:     rgba(122, 170, 138, 0.45);
+	--glow-60:     rgba(122, 170, 138, 0.60);
+	--glow-18:     rgba(122, 170, 138, 0.18);
+	--glow-07:     rgba(122, 170, 138, 0.07);
+	--orbit-1:     rgba(122, 170, 138, 0.30);
+	--orbit-2:     rgba(200, 232, 213, 0.18);
+	--orbit-3:     rgba(122, 170, 138, 0.14);
+	--dot-rgb:     rgba(122, 170, 138, 1);
+}
+[data-theme="ocean"] {
+	--sphere-a:    rgba(120, 168, 224, 0.95);
+	--sphere-b:    rgba( 60, 107, 168, 0.90);
+	--sphere-c:    rgba(  6,  16,  36, 0.95);
+	--glow-45:     rgba( 91, 140, 200, 0.45);
+	--glow-60:     rgba( 91, 140, 200, 0.60);
+	--glow-18:     rgba( 91, 140, 200, 0.18);
+	--glow-07:     rgba( 91, 140, 200, 0.07);
+	--orbit-1:     rgba( 91, 140, 200, 0.30);
+	--orbit-2:     rgba(184, 212, 240, 0.18);
+	--orbit-3:     rgba( 91, 140, 200, 0.14);
+	--dot-rgb:     rgba( 91, 140, 200, 1);
+}
+[data-theme="gold"] {
+	--sphere-a:    rgba(221, 184,  74, 0.95);
+	--sphere-b:    rgba(160, 120,  24, 0.90);
+	--sphere-c:    rgba( 40,  24,   4, 0.95);
+	--glow-45:     rgba(201, 160,  48, 0.45);
+	--glow-60:     rgba(201, 160,  48, 0.60);
+	--glow-18:     rgba(201, 160,  48, 0.18);
+	--glow-07:     rgba(201, 160,  48, 0.07);
+	--orbit-1:     rgba(201, 160,  48, 0.30);
+	--orbit-2:     rgba(240, 224, 160, 0.18);
+	--orbit-3:     rgba(201, 160,  48, 0.14);
+	--dot-rgb:     rgba(201, 160,  48, 1);
+}
+[data-theme="cherry"] {
+	--sphere-a:    rgba(220, 120, 140, 0.95);
+	--sphere-b:    rgba(160,  48,  72, 0.90);
+	--sphere-c:    rgba( 50,   8,  18, 0.95);
+	--glow-45:     rgba(181,  68,  90, 0.45);
+	--glow-60:     rgba(181,  68,  90, 0.60);
+	--glow-18:     rgba(181,  68,  90, 0.18);
+	--glow-07:     rgba(181,  68,  90, 0.07);
+	--orbit-1:     rgba(181,  68,  90, 0.30);
+	--orbit-2:     rgba(240, 208, 216, 0.18);
+	--orbit-3:     rgba(181,  68,  90, 0.14);
+	--dot-rgb:     rgba(181,  68,  90, 1);
+}
+[data-theme="midnight"] {
+	--sphere-a:    rgba(140, 152, 220, 0.95);
+	--sphere-b:    rgba( 80,  94, 170, 0.90);
+	--sphere-c:    rgba( 10,  12,  40, 0.95);
+	--glow-45:     rgba(110, 124, 200, 0.45);
+	--glow-60:     rgba(110, 124, 200, 0.60);
+	--glow-18:     rgba(110, 124, 200, 0.18);
+	--glow-07:     rgba(110, 124, 200, 0.07);
+	--orbit-1:     rgba(110, 124, 200, 0.30);
+	--orbit-2:     rgba(192, 200, 240, 0.18);
+	--orbit-3:     rgba(110, 124, 200, 0.14);
+	--dot-rgb:     rgba(110, 124, 200, 1);
+}
+[data-theme="copper"] {
+	--sphere-a:    rgba(210, 150, 100, 0.95);
+	--sphere-b:    rgba(150,  90,  40, 0.90);
+	--sphere-c:    rgba( 40,  18,   4, 0.95);
+	--glow-45:     rgba(184, 112,  64, 0.45);
+	--glow-60:     rgba(184, 112,  64, 0.60);
+	--glow-18:     rgba(184, 112,  64, 0.18);
+	--glow-07:     rgba(184, 112,  64, 0.07);
+	--orbit-1:     rgba(184, 112,  64, 0.30);
+	--orbit-2:     rgba(240, 208, 160, 0.18);
+	--orbit-3:     rgba(184, 112,  64, 0.14);
+	--dot-rgb:     rgba(184, 112,  64, 1);
+}
+[data-theme="arctic"] {
+	--sphere-a:    rgba(120, 210, 200, 0.95);
+	--sphere-b:    rgba( 60, 152, 144, 0.90);
+	--sphere-c:    rgba(  4,  30,  28, 0.95);
+	--glow-45:     rgba( 91, 186, 176, 0.45);
+	--glow-60:     rgba( 91, 186, 176, 0.60);
+	--glow-18:     rgba( 91, 186, 176, 0.18);
+	--glow-07:     rgba( 91, 186, 176, 0.07);
+	--orbit-1:     rgba( 91, 186, 176, 0.30);
+	--orbit-2:     rgba(184, 236, 234, 0.18);
+	--orbit-3:     rgba( 91, 186, 176, 0.14);
+	--dot-rgb:     rgba( 91, 186, 176, 1);
+}
+
 .hero {
 	position: relative;
 	min-height: 100vh;
@@ -387,25 +507,6 @@ onUnmounted(() => {
 	}
 }
 
-// Comet
-.hero__comet {
-	position: absolute; z-index: 2; pointer-events: none; top: 5%; left: 15%;
-	&::before {
-		content: ''; position: absolute;
-		width: 2px; height: 110px;
-		background: linear-gradient(to bottom, transparent 0%, rgba(232,213,190,0.6) 30%, rgba(255,255,255,0.95) 60%, rgba(196,129,139,0.5) 80%, transparent 100%);
-		border-radius: 2px; transform-origin: top center; transform: rotate(40deg);
-		animation: comet-fly 11s ease-in-out 2s infinite;
-	}
-}
-
-@keyframes comet-fly {
-	0%, 60%  { opacity: 0; transform: rotate(40deg) translate(-60px, -80px); }
-	65%  { opacity: 0.9; }
-	85%  { opacity: 0; transform: rotate(40deg) translate(340px, 420px); }
-	100% { opacity: 0; }
-}
-
 // Nebula
 .hero__nebula {
 	position: absolute; border-radius: 50%; pointer-events: none;
@@ -437,10 +538,10 @@ onUnmounted(() => {
 // Orbit rings
 .hero__orbit-ring {
 	position: absolute; inset: 0; border-radius: 50%;
-	border: 1px solid rgba(196,129,139,0.30);
+	border: 1px solid var(--orbit-1);
 	animation: ring-spin 13s linear infinite;
-	&--2 { border-color: rgba(232,213,190,0.18); animation-duration: 22s; animation-direction: reverse; }
-	&--3 { border-color: rgba(196,129,139,0.14); animation-duration: 36s; }
+	&--2 { border-color: var(--orbit-2); animation-duration: 22s; animation-direction: reverse; }
+	&--3 { border-color: var(--orbit-3); animation-duration: 36s; }
 }
 
 @keyframes ring-spin { to { transform: rotate(360deg); } }
@@ -449,10 +550,10 @@ onUnmounted(() => {
 .hero__orbit-dot {
 	position: absolute; top: 50%; left: -5px; transform: translateY(-50%);
 	width: 9px; height: 9px; border-radius: 50%;
-	background: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.9), $roseGold);
-	box-shadow: 0 0 14px rgba(196,129,139,0.9), 0 0 28px rgba(196,129,139,0.4);
-	&--warm { background: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.8), $champagne); box-shadow: 0 0 12px rgba(232,213,190,0.8), 0 0 24px rgba(232,213,190,0.3); }
-	&--small { width: 6px; height: 6px; left: -3px; box-shadow: 0 0 8px rgba(196,129,139,0.7); }
+	background: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.9), var(--dot-rgb));
+	box-shadow: 0 0 14px var(--glow-45), 0 0 28px var(--glow-18);
+	&--warm { background: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.8), $champagne); box-shadow: 0 0 12px var(--glow-60), 0 0 24px var(--glow-18); }
+	&--small { width: 6px; height: 6px; left: -3px; box-shadow: 0 0 8px var(--glow-45); }
 	&--opp { top: auto; bottom: 50%; transform: translateY(50%); }
 }
 
@@ -461,17 +562,18 @@ onUnmounted(() => {
 	position: absolute; width: 148px; height: 148px; border-radius: 50%;
 	background:
 		radial-gradient(circle at 32% 28%, rgba(255,255,255,0.10) 0%, transparent 22%),
-		radial-gradient(circle at 35% 38%, rgba(215,160,170,0.95) 0%, rgba(168,90,108,0.9) 32%, rgba(65,12,28,0.95) 65%, rgba(12,2,6,1) 100%);
+		radial-gradient(circle at 35% 38%, var(--sphere-a) 0%, var(--sphere-b) 32%, var(--sphere-c) 65%, rgba(12,2,6,1) 100%);
 	box-shadow:
 		inset -22px -18px 44px rgba(0,0,0,0.65), inset 6px 6px 16px rgba(255,255,255,0.05),
-		0 0 60px rgba(196,129,139,0.45), 0 0 140px rgba(196,129,139,0.18), 0 0 280px rgba(196,129,139,0.07);
+		0 0 60px var(--glow-45), 0 0 140px var(--glow-18), 0 0 280px var(--glow-07);
 	z-index: 2;
+	transition: background 0.6s ease, box-shadow 0.6s ease;
 	animation: sphere-breathe 4s ease-in-out infinite;
 }
 
 @keyframes sphere-breathe {
-	0%, 100% { box-shadow: inset -22px -18px 44px rgba(0,0,0,0.65), inset 6px 6px 16px rgba(255,255,255,0.05), 0 0 60px rgba(196,129,139,0.45), 0 0 140px rgba(196,129,139,0.18), 0 0 280px rgba(196,129,139,0.07); }
-	50%       { box-shadow: inset -22px -18px 44px rgba(0,0,0,0.65), inset 6px 6px 16px rgba(255,255,255,0.05), 0 0 80px rgba(196,129,139,0.6), 0 0 180px rgba(196,129,139,0.25), 0 0 340px rgba(196,129,139,0.10); }
+	0%, 100% { box-shadow: inset -22px -18px 44px rgba(0,0,0,0.65), inset 6px 6px 16px rgba(255,255,255,0.05), 0 0 60px var(--glow-45), 0 0 140px var(--glow-18), 0 0 280px var(--glow-07); }
+	50%       { box-shadow: inset -22px -18px 44px rgba(0,0,0,0.65), inset 6px 6px 16px rgba(255,255,255,0.05), 0 0 80px var(--glow-60), 0 0 180px var(--glow-45), 0 0 340px var(--glow-18); }
 }
 
 .hero__sphere-hl {
@@ -489,54 +591,65 @@ onUnmounted(() => {
 	box-shadow: 0 0 4px rgba(255,255,255,0.4);
 }
 
-// Pills
+// Pills — orbit around the planet (all start at center, rotate outward)
+// Delays derived from starting angle: delay = -(angle/360) * 28s
+// top=270° → -21s | right=0° → 0s | bottom=90° → -7s | left=180° → -14s
 .hero__pill {
 	position: absolute; display: flex; align-items: center; gap: 7px;
+	top: 50%; left: 50%;
 	padding: 8px 14px; background: rgba(8,10,12,0.7); border: 1px solid rgba(255,255,255,0.10);
 	border-radius: 100px; font-size: 0.75rem; font-weight: 500; color: $textSecondary;
 	white-space: nowrap; backdrop-filter: blur(16px); z-index: 5; opacity: 0;
 
-	&--top    { top: 6px;    left: 50%; animation: pill-bob-y  4s   ease-in-out infinite; }
-	&--right  { right: -50px; top: 50%; animation: pill-bob-x  5s   ease-in-out infinite 1s; }
-	&--bottom { bottom: 6px; left: 50%; animation: pill-bob-y  4.5s ease-in-out infinite 2s; }
-	&--left   { left: -50px; top: 50%;  animation: pill-bob-xl 5s   ease-in-out infinite 3s; }
+	&--top    { animation: orbit-pill 28s linear -21s  infinite; }
+	&--right  { animation: orbit-pill 28s linear  0s   infinite; }
+	&--bottom { animation: orbit-pill 28s linear -7s   infinite; }
+	&--left   { animation: orbit-pill 28s linear -14s  infinite; }
 }
 
-@keyframes pill-bob-y  { 0%,100% { transform: translateX(-50%) translateY(0);    } 50% { transform: translateX(-50%) translateY(-7px);  } }
-@keyframes pill-bob-x  { 0%,100% { transform: translateY(-50%) translateX(0);    } 50% { transform: translateY(-50%) translateX(6px);   } }
-@keyframes pill-bob-xl { 0%,100% { transform: translateY(-50%) translateX(0);    } 50% { transform: translateY(-50%) translateX(-6px);  } }
+@keyframes orbit-pill {
+	from { transform: translate(-50%, -50%) rotate(0deg)   translateX(210px) rotate(0deg); }
+	to   { transform: translate(-50%, -50%) rotate(360deg) translateX(210px) rotate(-360deg); }
+}
 
 .hero__pill-dot { width: 5px; height: 5px; border-radius: 50%; background: $roseGold; box-shadow: 0 0 6px rgba(196,129,139,0.8); flex-shrink: 0; }
 
-// ─── Info chips ────────────────────────────
+// ─── Info chips — orbit closer to planet than pills (r=178px, period=36s)
+// top-right=315° → -31.5s | bot-left=135° → -13.5s | bot-right=45° → -4.5s
 .hero__chip {
 	position: absolute; z-index: 6; opacity: 0;
+	top: 50%; left: 50%;
 	backdrop-filter: blur(16px);
 }
 
 .hero__chip--exp {
-	top: 32px; right: -8px;
 	display: flex; flex-direction: column; align-items: center; gap: 1px;
 	padding: 10px 16px; background: rgba(8,10,12,0.78);
 	border: 1px solid rgba(232,213,190,0.18); border-radius: 12px;
 	box-shadow: 0 8px 28px rgba(0,0,0,0.4);
+	animation: orbit-chip 36s linear -31.5s infinite;
 }
 
 .hero__chip--clients {
-	bottom: 70px; right: -8px;
 	display: flex; flex-direction: column; align-items: center; gap: 1px;
 	padding: 10px 16px; background: rgba(8,10,12,0.78);
 	border: 1px solid rgba(196,129,139,0.18); border-radius: 12px;
 	box-shadow: 0 8px 28px rgba(0,0,0,0.4);
+	animation: orbit-chip 36s linear -13.5s infinite;
 }
 
 .hero__chip--founder {
-	bottom: 0; left: 50%; transform: translateX(-50%);
 	display: flex; align-items: center; gap: 10px;
 	padding: 10px 16px; background: rgba(8,10,12,0.82);
 	border: 1px solid rgba(196,129,139,0.25); border-radius: 14px;
 	white-space: nowrap;
 	box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 20px rgba(196,129,139,0.08);
+	animation: orbit-chip 36s linear -4.5s infinite;
+}
+
+@keyframes orbit-chip {
+	from { transform: translate(-50%, -50%) rotate(0deg)   translateX(178px) rotate(0deg); }
+	to   { transform: translate(-50%, -50%) rotate(360deg) translateX(178px) rotate(-360deg); }
 }
 
 .hero__chip-val {
@@ -553,6 +666,17 @@ onUnmounted(() => {
 	display: flex; align-items: center; justify-content: center;
 	font-family: $headingFont; font-size: 1rem; font-style: italic;
 	color: $white; flex-shrink: 0; box-shadow: 0 0 14px rgba(196,129,139,0.5);
+	overflow: hidden; position: relative;
+}
+
+.hero__chip-avatar-img {
+	position: absolute; inset: 0;
+	width: 100%; height: 100%;
+	object-fit: cover; border-radius: 50%;
+}
+
+.hero__chip-avatar-fallback {
+	position: relative; z-index: 1;
 }
 
 .hero__chip-info { display: flex; flex-direction: column; gap: 1px; }

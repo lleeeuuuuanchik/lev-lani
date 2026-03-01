@@ -37,6 +37,8 @@ export default defineNuxtConfig({
 	// Cormorant Garamond — для заголовков (italic, 300-700)
 	// Inter — тело страницы, грузится локально из /assets/fonts/
 	app: {
+		pageTransition: { name: 'page', mode: 'out-in' },
+
 		head: {
 			// Язык документа — критично для SEO и доступности
 			htmlAttrs: { lang: 'ru' },

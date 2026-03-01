@@ -23,7 +23,7 @@ useSeoMeta({
 	ogDescription: 'Профессиональный уход за волосами, ногтями и кожей. Мастера с опытом 10+ лет. Запись онлайн.',
 	ogType:        'website',
 	ogUrl:          SITE_URL,
-	ogImage:        `${SITE_URL}/og-image.jpg`,   // 1200×630 px
+	ogImage:        `${SITE_URL}/og-image.svg`,   // 1200×630 px
 	ogImageWidth:  '1200',
 	ogImageHeight: '630',
 	ogImageAlt:    'Lev & Lani Beauty Studio — Владикавказ',
@@ -33,7 +33,7 @@ useSeoMeta({
 	twitterCard:        'summary_large_image',
 	twitterTitle:       'Lev & Lani — Салон красоты во Владикавказе',
 	twitterDescription: 'Профессиональный уход за волосами, ногтями и кожей. Запись онлайн.',
-	twitterImage:        `${SITE_URL}/og-image.jpg`,
+	twitterImage:        `${SITE_URL}/og-image.svg`,
 });
 
 // Canonical — предотвращает дублирование если сайт доступен с www/без www

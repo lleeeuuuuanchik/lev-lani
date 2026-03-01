@@ -40,6 +40,34 @@ export const THEMES = [
 		preview: '#c9a030',
 		champagne: '#f0e0a0',
 	},
+	{
+		id: 'cherry',
+		name: 'Cherry Blossom',
+		description: 'Тёмная вишня',
+		preview: '#b5445a',
+		champagne: '#f0d0d8',
+	},
+	{
+		id: 'midnight',
+		name: 'Midnight Indigo',
+		description: 'Полночный индиго',
+		preview: '#6e7cc8',
+		champagne: '#c0c8f0',
+	},
+	{
+		id: 'copper',
+		name: 'Copper',
+		description: 'Медь и бронза',
+		preview: '#b87040',
+		champagne: '#f0d0a0',
+	},
+	{
+		id: 'arctic',
+		name: 'Arctic Mint',
+		description: 'Арктическая мята',
+		preview: '#5bbab0',
+		champagne: '#b8ecea',
+	},
 ] as const;
 
 export type ThemeId = (typeof THEMES)[number]['id'];
