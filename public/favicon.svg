@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#c4818b"/>
+      <stop offset="100%" stop-color="#e8d5be"/>
+    </linearGradient>
+    <linearGradient id="g2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#a86670"/>
+      <stop offset="100%" stop-color="#c4818b"/>
+    </linearGradient>
+  </defs>
+  <!-- Background circle -->
+  <circle cx="16" cy="16" r="15" fill="#080a0c"/>
+  <!-- 4-pointed gem / star diamond -->
+  <path d="M16 3 L19.5 12.5 L29 16 L19.5 19.5 L16 29 L12.5 19.5 L3 16 L12.5 12.5 Z" fill="url(#g)" opacity="0.9"/>
+  <!-- Inner facet highlight -->
+  <path d="M16 7 L18 13.5 L16 15 L14 13.5 Z" fill="rgba(255,255,255,0.25)"/>
+  <path d="M16 25 L18 18.5 L16 17 L14 18.5 Z" fill="rgba(255,255,255,0.08)"/>
+</svg>

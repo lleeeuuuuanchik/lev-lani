@@ -1,6 +1,227 @@
-.g-h1
-{
-    margin-bottom: 25px;
-    font-size: 3.5rem;
-    text-align: center;
+html,
+body {
+	background-color: $bg;
+	color: $textPrimary;
+	font-family: $firstFont;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+// Custom scrollbar
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: $bg; }
+::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.18); }
+
+// ============================================
+// TYPOGRAPHY UTILITIES
+// ============================================
+
+.g-h1 {
+	font-family: $headingFont;
+	font-size: clamp(3rem, 7vw, 5.5rem);
+	font-weight: 300;
+	line-height: 1.06;
+	letter-spacing: -0.01em;
+	color: $textPrimary;
+}
+
+.g-h2 {
+	font-family: $headingFont;
+	font-size: clamp(2.2rem, 4.5vw, 3.5rem);
+	font-weight: 300;
+	line-height: 1.12;
+	color: $textPrimary;
+}
+
+.g-heading {
+	font-family: $headingFont;
+	font-weight: 300;
+}
+
+// ─── Cosmic section label ───────────────────
+// Visual: ──• LABEL
+.g-label {
+	display: inline-flex;
+	align-items: center;
+	gap: 10px;
+	font-size: 0.63rem;
+	font-weight: 700;
+	letter-spacing: 0.3em;
+	text-transform: uppercase;
+	background: linear-gradient(90deg, $roseGold 0%, rgba(232,213,190,0.9) 100%);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-clip: text;
+
+	// Decorative dash
+	&::before {
+		content: '';
+		display: block;
+		flex-shrink: 0;
+		width: 22px;
+		height: 1px;
+		background: linear-gradient(90deg, transparent, $roseGold);
+	}
+
+	// Pulsing star dot
+	&::after {
+		content: '';
+		display: block;
+		flex-shrink: 0;
+		width: 4px;
+		height: 4px;
+		border-radius: 50%;
+		background: $roseGold;
+		box-shadow: 0 0 6px rgba(196,129,139,0.8);
+		animation: g-label-star 2.5s ease-in-out infinite;
+	}
+}
+
+@keyframes g-label-star {
+	0%, 100% {
+		box-shadow: 0 0 4px rgba(196,129,139,0.5);
+		transform: scale(1);
+	}
+	50% {
+		box-shadow: 0 0 12px rgba(196,129,139,1), 0 0 24px rgba(196,129,139,0.4);
+		transform: scale(1.4);
+	}
+}
+
+// ─── Section subheading ──────────────────────
+// Usage: <p class="g-sub">...</p>
+.g-sub {
+	font-family: $headingFont;
+	font-size: clamp(1rem, 1.6vw, 1.2rem);
+	font-weight: 300;
+	font-style: italic;
+	color: $textSecondary;
+	line-height: 1.7;
+}
+
+.g-gradient-text {
+	background: linear-gradient(120deg, $roseGold 0%, $champagne 55%, $roseGoldLight 100%);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-clip: text;
+}
+
+// ============================================
+// LAYOUT
+// ============================================
+
+.container {
+	max-width: $desktop;
+	margin: 0 auto;
+	padding: 0 48px;
+
+	@include mq(0, $tablet) {
+		padding: 0 20px;
+	}
+
+	@include mq($tablet, $laptop) {
+		padding: 0 32px;
+	}
+}
+
+// ─── Cosmic star field overlay on sections ───
+.g-section {
+	padding: 120px 0;
+	position: relative;
+
+	// Star field — tiny dots scattered across the section
+	&::after {
+		content: '';
+		position: absolute;
+		top: 0; left: 0;
+		width: 1px; height: 1px;
+		border-radius: 50%;
+		background: transparent;
+		pointer-events: none;
+		z-index: 1;
+		// Stars as box-shadow offsets from top-left corner
+		box-shadow:
+			23px 48px 0 0 rgba(255,255,255,0.16),
+			87px 112px 0 0 rgba(255,255,255,0.10),
+			145px 28px 0 0 rgba(196,129,139,0.18),
+			198px 94px 0 0 rgba(255,255,255,0.13),
+			267px 62px 0 0 rgba(255,255,255,0.20),
+			344px 132px 0 0 rgba(255,255,255,0.11),
+			412px 44px 0 0 rgba(196,129,139,0.14),
+			489px 84px 0 0 rgba(255,255,255,0.16),
+			541px 28px 0 0 rgba(255,255,255,0.12),
+			632px 106px 0 0 rgba(196,129,139,0.16),
+			701px 52px 0 0 rgba(255,255,255,0.13),
+			778px 88px 0 0 rgba(255,255,255,0.18),
+			834px 36px 0 0 rgba(196,129,139,0.12),
+			912px 118px 0 0 rgba(255,255,255,0.14),
+			967px 64px 0 0 rgba(255,255,255,0.10),
+			1045px 28px 0 0 rgba(196,129,139,0.16),
+			1112px 96px 0 0 rgba(255,255,255,0.14),
+			1178px 44px 0 0 rgba(255,255,255,0.20),
+			1234px 118px 0 0 rgba(196,129,139,0.12),
+			58px 192px 0 0 rgba(255,255,255,0.12),
+			134px 256px 0 0 rgba(196,129,139,0.16),
+			219px 178px 0 0 rgba(255,255,255,0.14),
+			298px 234px 0 0 rgba(255,255,255,0.10),
+			367px 168px 0 0 rgba(196,129,139,0.18),
+			445px 248px 0 0 rgba(255,255,255,0.13),
+			521px 196px 0 0 rgba(255,255,255,0.16),
+			589px 274px 0 0 rgba(196,129,139,0.12),
+			668px 212px 0 0 rgba(255,255,255,0.18),
+			743px 158px 0 0 rgba(255,255,255,0.14),
+			821px 242px 0 0 rgba(196,129,139,0.16),
+			892px 186px 0 0 rgba(255,255,255,0.12),
+			964px 258px 0 0 rgba(255,255,255,0.14),
+			1038px 178px 0 0 rgba(196,129,139,0.18),
+			1124px 236px 0 0 rgba(255,255,255,0.10),
+			1198px 176px 0 0 rgba(255,255,255,0.16),
+			12px 322px 0 0 rgba(255,255,255,0.12),
+			78px 378px 0 0 rgba(196,129,139,0.14),
+			156px 306px 0 0 rgba(255,255,255,0.18),
+			237px 354px 0 0 rgba(255,255,255,0.12),
+			315px 298px 0 0 rgba(196,129,139,0.16),
+			394px 366px 0 0 rgba(255,255,255,0.14),
+			472px 312px 0 0 rgba(255,255,255,0.10),
+			558px 342px 0 0 rgba(196,129,139,0.18),
+			634px 306px 0 0 rgba(255,255,255,0.16),
+			712px 378px 0 0 rgba(255,255,255,0.12),
+			789px 322px 0 0 rgba(196,129,139,0.14),
+			867px 364px 0 0 rgba(255,255,255,0.18),
+			945px 308px 0 0 rgba(255,255,255,0.12),
+			1024px 352px 0 0 rgba(196,129,139,0.16),
+			1098px 314px 0 0 rgba(255,255,255,0.14);
+	}
+
+	@include mq(0, $tablet) {
+		padding: 72px 0;
+	}
+}
+
+// ============================================
+// GLASS CARD UTILITY
+// ============================================
+
+.g-card {
+	background: rgba(255, 255, 255, 0.025);
+	border: 1px solid $border;
+	border-radius: 16px;
+	@include transition();
+
+	&:hover {
+		border-color: $borderHover;
+		background: rgba(255, 255, 255, 0.04);
+	}
+}
+
+// ============================================
+// DECORATIVE
+// ============================================
+
+// Thin horizontal divider with gradient fade
+.g-divider {
+	width: 100%;
+	height: 1px;
+	background: linear-gradient(90deg, transparent, $border 30%, $border 70%, transparent);
 }

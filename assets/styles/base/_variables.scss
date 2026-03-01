@@ -1,14 +1,143 @@
-// цвета
-$black: #282C34;
-$gray: #82868E;
-$lightGray: #E8E8E7;
-$red: #DC1020;
+// ============================================
+// COLOR SYSTEM — Lev & Lani Premium Dark
+// ============================================
+
+// Base
+$black: #080a0c;
 $white: #ffffff;
+$red:   #ff4d6d;
 
-// Разрешения
-$tablet: 768px;
-$laptop: 1024px;
-$desktop: 1180px;
+// Background layers
+$bg:      #080a0c;
+$bg2:     #0e1012;
+$bgCard:  #131618;
+$bgCard2: #1a1d20;
 
-// шрифты
-$firstFont: 'Inter', sans-serif;
+// Legacy compat
+$darkBg:  #080a0c;
+$lightBg: #0e1012;
+
+// Text
+$textPrimary:   #f0ece8;
+$textSecondary: rgba(240, 236, 232, 0.52);
+$textMuted:     rgba(240, 236, 232, 0.28);
+
+// Legacy compat for UI components
+$gray:      rgba(240, 236, 232, 0.42);
+$lightGray: rgba(255, 255, 255, 0.06);
+
+// Borders
+$border:      rgba(255, 255, 255, 0.07);
+$borderHover: rgba(255, 255, 255, 0.13);
+$borderFocus: var(--border-focus, rgba(196, 129, 139, 0.5));
+
+// ============================================
+// BRAND PALETTE — themeable via CSS vars
+// ============================================
+
+// Rose Gold (default theme)
+$roseGold:      var(--accent,       #c4818b);
+$roseGoldLight: var(--accent-light, #d49aa3);
+$roseGoldDark:  var(--accent-dark,  #a86670);
+$roseGoldGlow:  var(--accent-glow,  rgba(196, 129, 139, 0.18));
+
+// Champagne
+$champagne:      var(--champagne,       #e8d5be);
+$champagneLight: rgba(232, 213, 190, 0.06);
+$champagneMuted: var(--champagne-muted, rgba(232, 213, 190, 0.55));
+
+// ============================================
+// CSS CUSTOM PROPERTIES — Theme definitions
+// ============================================
+
+:root {
+	// Default: Rose Cosmos
+	--accent:           #c4818b;
+	--accent-light:     #d49aa3;
+	--accent-dark:      #a86670;
+	--accent-glow:      rgba(196, 129, 139, 0.18);
+	--accent-rgb:       196, 129, 139;
+	--champagne:        #e8d5be;
+	--champagne-muted:  rgba(232, 213, 190, 0.55);
+	--border-focus:     rgba(196, 129, 139, 0.5);
+
+	// Legacy compat
+	--color-rose-gold:       #c4818b;
+	--color-rose-gold-light: #d49aa3;
+	--color-rose-gold-dark:  #a86670;
+	--color-champagne:       #e8d5be;
+	--color-dark:            #080a0c;
+	--color-card:            #131618;
+	--color-border:          rgba(255, 255, 255, 0.07);
+}
+
+// ─── Theme 1: Rose Cosmos (default) ──────────────────────────
+.theme-rose, [data-theme="rose"] {
+	--accent:           #c4818b;
+	--accent-light:     #d49aa3;
+	--accent-dark:      #a86670;
+	--accent-glow:      rgba(196, 129, 139, 0.18);
+	--accent-rgb:       196, 129, 139;
+	--champagne:        #e8d5be;
+	--champagne-muted:  rgba(232, 213, 190, 0.55);
+	--border-focus:     rgba(196, 129, 139, 0.5);
+}
+
+// ─── Theme 2: Violet Galaxy ───────────────────────────────────
+.theme-violet, [data-theme="violet"] {
+	--accent:           #9b72cf;
+	--accent-light:     #b494e0;
+	--accent-dark:      #7a54a8;
+	--accent-glow:      rgba(155, 114, 207, 0.18);
+	--accent-rgb:       155, 114, 207;
+	--champagne:        #d8c8f0;
+	--champagne-muted:  rgba(216, 200, 240, 0.55);
+	--border-focus:     rgba(155, 114, 207, 0.5);
+}
+
+// ─── Theme 3: Sage Botanic ────────────────────────────────────
+.theme-sage, [data-theme="sage"] {
+	--accent:           #7aaa8a;
+	--accent-light:     #96c0a6;
+	--accent-dark:      #5c886e;
+	--accent-glow:      rgba(122, 170, 138, 0.18);
+	--accent-rgb:       122, 170, 138;
+	--champagne:        #c8e8d5;
+	--champagne-muted:  rgba(200, 232, 213, 0.55);
+	--border-focus:     rgba(122, 170, 138, 0.5);
+}
+
+// ─── Theme 4: Ocean Abyss ─────────────────────────────────────
+.theme-ocean, [data-theme="ocean"] {
+	--accent:           #5b8cc8;
+	--accent-light:     #78a8e0;
+	--accent-dark:      #3c6ba8;
+	--accent-glow:      rgba(91, 140, 200, 0.18);
+	--accent-rgb:       91, 140, 200;
+	--champagne:        #b8d4f0;
+	--champagne-muted:  rgba(184, 212, 240, 0.55);
+	--border-focus:     rgba(91, 140, 200, 0.5);
+}
+
+// ─── Theme 5: Gold Desert ─────────────────────────────────────
+.theme-gold, [data-theme="gold"] {
+	--accent:           #c9a030;
+	--accent-light:     #ddb84a;
+	--accent-dark:      #a07818;
+	--accent-glow:      rgba(201, 160, 48, 0.18);
+	--accent-rgb:       201, 160, 48;
+	--champagne:        #f0e0a0;
+	--champagne-muted:  rgba(240, 224, 160, 0.55);
+	--border-focus:     rgba(201, 160, 48, 0.5);
+}
+
+// ============================================
+// BREAKPOINTS & TYPOGRAPHY
+// ============================================
+
+$tablet:  768px;
+$laptop:  1024px;
+$desktop: 1200px;
+
+$firstFont:   'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+$headingFont: 'Cormorant Garamond', Georgia, serif;

@@ -1,1 +1,9 @@
+User-agent: *
+Allow: /
 
+# Закрываем административную панель от индексации
+Disallow: /admin/
+Disallow: /admin
+
+# Sitemap — помогает поисковикам быстрее находить все страницы
+Sitemap: https://levlani.ru/sitemap.xml

@@ -1,479 +1,361 @@
-# Оглавление
+# Lev & Lani — Beauty Studio
 
-0. [Минимальные требования перед запуском проекта](#Минимальные-требования-перед-запуском-проекта)
-1. [Используемый стек](#Используемый-стек)
-2. [Code style](#Code-style)
-3. [Структура проекта](#Структура-проекта)
-4. [Работа с API](#Работа-с-API)
-5. [Работа с формами](#Работа-с-формами)
-6. [Комментирование кода](#Комментирование-кода)
-7. [Команды](#Команды)
-8. [Рекомендации](#Рекомендации)
+Сайт салона красоты с публичной витриной, формой записи и защищённой панелью администратора. Построен на **Nuxt 4** с тёмной luxury-темой, GSAP-анимациями и SQLite-базой данных.
 
-# Минимальные требования перед запуском проекта
-Ознакомиться с [используемым стеком](#Используемый-стек), хотя бы частично.
-Установить минимальную версию `Node.js`: v21.7.3 (LTS)
-Установить минимальную версию `npm`: v10.5.0 (Latest)
+---
 
-# Используемый стек
-- Фреймворк - [nuxt 3 @^3.12.4](https://nuxt.com/docs/getting-started/introduction)
-- Глобальное хранилище - [@pinia/nuxt @^0.5.1](https://nuxt.com/modules/pinia)
-- Ui библиотека - [shadcn-nuxt @^0.10.4](https://www.shadcn-vue.com/docs/installation/nuxt.html)
-- Препроцессор - [SASS @^1.77.8](https://sass-lang.com/)
-- Валидация - ["@vuelidate/core": "^2.0.3", "@vuelidate/validators": "^2.0.4",](https://vuelidate-next.netlify.app/),
+## Содержание
 
-# Code style
-По всей компании придерживаемся стиля [Allman](https://en.wikipedia.org/wiki/Indentation_style#Allman_style) для размещения фигурных скобок.
+- [Стек технологий](#стек-технологий)
+- [Архитектура проекта](#архитектура-проекта)
+- [Дизайн-система](#дизайн-система)
+- [Запуск и разработка](#запуск-и-разработка)
+- [Переменные окружения](#переменные-окружения)
+- [База данных](#база-данных)
+- [API-эндпоинты](#api-эндпоинты)
+- [Публичный сайт](#публичный-сайт)
+- [Панель администратора](#панель-администратора)
+- [Система тем](#система-тем)
+- [Анимации GSAP](#анимации-gsap)
+- [Структура файлов](#структура-файлов)
 
-## Стиль Allman
-В стиле Allman открывающая фигурная скобка размещается на новой строке, выровненная с началом управляющей структуры.
-**Важно**: Избегаем фигурные скобки, если внутри только одна строка кода (касается if, for, while и других конструкций).
+---
 
-### Примеры JavaScript:
-```javascript
-// Функции
-function calculateTotal(items)
-{
-	let total = 0;
-	for (let i = 0; i < items.length; i++)
-		total += items[i].price;
+## Стек технологий
 
-	return total;
-}
+| Категория | Технология |
+|---|---|
+| Framework | Nuxt 4 (Vue 3, SSR) |
+| Стили | SCSS + Tailwind CSS v4 (Vite-плагин) |
+| Анимации | GSAP + ScrollTrigger |
+| База данных | SQLite через Drizzle ORM + better-sqlite3 |
+| Аутентификация | nuxt-auth-utils (sealed cookie-сессии) |
+| Валидация клиент | Vuelidate |
+| Валидация сервер | Zod |
+| Маска полей | maska (директива v-maska) |
+| Уведомления | vue-toast-notification |
+| Иконки | lucide-vue-next |
+| Шрифты | Inter (локально) + Cormorant Garamond (Google Fonts) |
 
-function validateUser(user)
-{
-	if (!user.email)
-		throw new Error('Email is required');
+---
 
-	return true;
-}
+## Архитектура проекта
 
-// Условные операторы
-if (user.isAuthenticated)
-{
-	console.log('Пользователь авторизован');
-	if (user.hasPermission('admin'))
-		showAdminPanel();
-}
-else
-	redirectToLogin();
+### Лейауты
 
-// Циклы
-for (let i = 0; i < array.length; i++)
-{
-	if (array[i].isValid)
-		processItem(array[i]);
-}
+Два лейаута в `layouts/`:
 
-// Дополнительные примеры без фигурных скобок
-while (condition)
-	doSomething();
+- **`default.vue`** — для публичного сайта. Структура: `FallingStars` (фоновые частицы) → `AppNavbar` → `<slot>` (контент) → `AppFooter`. Через `Teleport` добавляет глобальный прелоадер (`HugePreloader`) и диалог подтверждения (`UiConfirmDialog`).
 
-// Объекты и классы
-const userConfig =
-{
-	name: 'John Doe',
-	email: 'john@example.com',
-	settings:
-	{
-		theme: 'dark',
-		notifications: true
-	}
-};
+- **`admin.vue`** — для всех страниц `/admin/*`. Содержит боковой sidebar с Lucide-иконками и кнопкой выхода. Страницы подключают его через `definePageMeta({ layout: 'admin' })`.
+
+### Маршруты
+
+```
+/                  → pages/index.vue          (публичный сайт)
+/privacy           → pages/privacy.vue        (политика конфиденциальности)
+/admin/login       → pages/admin/login.vue    (вход — без middleware)
+/admin             → pages/admin/index.vue    (список заявок, защищён)
+/admin/services    → pages/admin/services.vue
+/admin/masters     → pages/admin/masters.vue
+/admin/reviews     → pages/admin/reviews.vue
+/admin/theme       → pages/admin/theme.vue
 ```
 
-## Нэйминг в файловой структуре
+### Защита роутов
 
-### Именование папок и файлов
-- **Папки** → kebab-case (например: `user-profile/`, `news-list/`)
-- **Файлы (кроме компонентов)** → kebab-case (например: `user-service.js`, `api-utils.js`)
-- **Компоненты** → PascalCase (например: `UserCard.vue`, `NewsList.vue`)
+`middleware/auth.ts` запускается на всех маршрутах `/admin/*` кроме `/admin/login`. Использует `useUserSession()` из nuxt-auth-utils — если сессии нет, редиректит на `/admin/login`.
 
-### Именование в коде
-- Формат названий функций и переменных - **camelCase**
-- Формат названий констант - **SCREAM_CASE**
-- Формат названий CSS селекторов - [БЭМ](https://ru.bem.info/methodology/css/)
+---
 
-## Табуляция и отступы
-- **Используем табуляцию табами** - размер 4 пробела
-- **Консистентность отступов** - все файлы должны использовать одинаковые отступы
-- **Настройка редактора** - смотреть файл `.editorconfig` для VSCode в `./.vscode/settings.json` для того чтобы редактор не подставлял что-то другое
-- Внутри тегов `<script>`, `<template>` и `<style>` весь код должен быть отступлен на один таб от начала строки
-- Это обеспечивает четкую визуальную иерархию и улучшает читаемость кода
+## Дизайн-система
 
-### Пример правильных отступов:
-> **Примечание**: В примере ниже используются настоящие табы размером в 4 пробела
+### Цветовая палитра
 
-```vue
-<template>
-	<div class="user-card">
-		<div class="user-card__header">
-			<img class="user-card__avatar" src="avatar.jpg" alt="Avatar">
-			<h2 class="user-card__title">Иван Иванов</h2>
-		</div>
-		<div class="user-card__content">
-			<p>Описание пользователя...</p>
-		</div>
-	</div>
-</template>
+Тёмная luxury-тема с акцентами rose-gold. Переменные в `assets/styles/base/_variables.scss`:
 
-<script>
-	export default {
-		name: 'UserCard',
-		props:
-		{
-			user:
-			{
-				type: Object,
-				required: true
-			}
-		},
-		computed:
-		{
-			fullName()
-			{
-				return `${this.user.firstName} ${this.user.lastName}`
-			}
-		}
-	}
-</script>
+| Переменная | Значение | Назначение |
+|---|---|---|
+| `$bg` | `#080a0c` | Основной фон |
+| `$bg2` | `#0e1012` | Чуть светлее |
+| `$bgCard` | `#131618` | Карточки |
+| `$textPrimary` | `#f0ece8` | Основной текст |
+| `$textSecondary` | `rgba(240,236,232,0.52)` | Вторичный текст |
+| `$roseGold` | `#c4818b` | Акцент |
+| `$champagne` | `#e8d5be` | Шампань |
+| `$border` | `rgba(255,255,255,0.07)` | Границы |
 
-<style scoped>
-	.user-card
-	{
-		padding: 20px;
-		border: 1px solid #ccc;
-	}
-	.user-card__header
-	{
-		display: flex;
-		align-items: center;
-		margin-bottom: 15px;
-	}
-</style>
-```
+### Темы
 
-### BEM - именование в классов и стилей
-- **Используем наименование по BEM** - block__element--modifier
-- **Избегаем `&` в стилях** с целью увеличения читаемости и удобства поиска нужных классов
-- **Стандартные теги внутри BEM элементов** - можно иногда пропускать установку им классов и напрямую указывать стили для этих элементов (но не глобально)
-- **Классы в HTML компонента** - только по БЭМ либо глобальные классы с префиксом `g-`
-- **Именование компонентов** - если компонент в папке `components/Blog/Card.vue`, то именовать надо `blog-card`, а подключение `<BlogCard />`
+5 цветовых тем (переключаются через кнопку Palette в navbar):
 
-#### Примеры BEM:
-```scss
-// Блок
-.user-card {
-	padding: 20px;
-	border: 1px solid #ccc;
-}
+| ID | Название | Акцент |
+|---|---|---|
+| `rose` | Rose Cosmos | `#c4818b` (по умолчанию) |
+| `violet` | Violet Galaxy | `#9b72cf` |
+| `sage` | Sage Botanic | `#7aaa8a` |
+| `ocean` | Ocean Abyss | `#5b8cc8` |
+| `gold` | Gold Desert | `#c9a030` |
 
-// Элементы
-.user-card__header {
-	display: flex;
-	align-items: center;
-	margin-bottom: 15px;
-}
+### Типографика
 
-.user-card__avatar {
-	width: 50px;
-	height: 50px;
-	border-radius: 50%;
-}
+- **Inter** — основной шрифт (локально, `assets/fonts/`)
+- **Cormorant Garamond** — заголовки (Google Fonts, italic/300-700)
 
-// Модификаторы
-.user-card--featured {
-	border-color: #007bff;
-	background-color: #f8f9fa;
-}
+### UI-компоненты (`components/ui/`)
 
-.user-card--featured .user-card__title {
-	color: #007bff;
-}
+| Компонент | Описание |
+|---|---|
+| `Button.vue` | Кнопка: default (solid gradient), ghost, border, outline; размеры sm/lg/xl |
+| `Input.vue` | Поле ввода; `isPhone=true` включает maska `+7 (###) ###-##-##` |
+| `Select.vue` | Кастомный select с `<Teleport to="body">` — выпадает из overflow:hidden |
+| `ConfirmDialog.vue` | Модальный диалог (управляется `stores/confirm-dialog.js`) |
+| `Skeleton.vue` | Skeleton-placeholder при загрузке |
 
-// Глобальные классы с префиксом g- эти стили писать не в компонентах конечно
-.g-container {
-	max-width: 1200px;
-	margin: 0 auto;
-	padding: 0 20px;
-}
+---
 
-.g-button {
-	padding: 10px 20px;
-	border: none;
-	border-radius: 4px;
-	cursor: pointer;
-}
-```
+## Запуск и разработка
 
-```vue
-<template>
-	<div class="user-card user-card--featured">
-		<div class="user-card__header">
-			<img class="user-card__avatar" src="avatar.jpg" alt="Avatar">
-			<h2 class="user-card__title">Иван Иванов</h2>
-		</div>
-		<div class="user-card__content">
-			<p>Описание пользователя...</p>
-			<!-- Стандартные теги без классов -->
-			<h3>Дополнительная информация</h3>
-			<p>Еще один параграф</p>
-		</div>
-	</div>
-</template>
-```
+### Установка
 
-# Структура проекта
-В этом разделе будет подробно (по возможности) описана структура проекта, чтобы не возникало вопросов, что, где и почему
-Общая структура проекта будет выглядеть следующим образом:
-```
-Корень проекта /
-| - api
-| - assets
-| - components
-| - composables
-| - layouts
-| - pages
-| - plugins
-| - public
-| - server
-| - utils
-| - assets/
-|   |- fonts/.
-|   |- styles/;
-|        |- base/;
-|        |- index.scss;
-|        |- tailwind.css;
-```
-
-Дальше разберем каждую по отдельности
-
-## 📁 /api
-В данной директории будут находиться функции-запросы, разделенные по модулям, т.е. модуль авторизации (auth.js),
-модуль работы с пользователем (user.js) и т.д.
-
-Это поможет нам скомпоновать идентичные запросы в одном месте и избавит нас от дублирования одинаковых запросов.
-
-❗Исключением является запрос, который существует конкретно на одной странице и в одном месте, тогда
-создание модуля избыточно.
-
-## 📁 /assets
-В данной директории будут находиться стили, которые доступны всему проекту
-
-### 📁 /fonts
-Тут должны быть ваши шрифты
-
-### 📁 /styles
-```
-styles/
-|
-|- base/
-|  |- _fonts.scss     // Ваши шрифты
-|  |- _global.scss    // Возможно повторяющиеся стили по всему проекту
-|  |- _mixins.scss    // Миксины для упрощения вашей жизни
-|  |- _variables.scss // SCSS переменные
-|
-- index.scss // Главный SCSS файл
-```
-
-## 📁 /components
-В данной директории находятся все переиспользуемые компоненты приложения. Рекомендуется группировать компоненты по функциональности в отдельные папки (например: `components/User/`, `components/News/`, `components/Forms/`). Это улучшает навигацию по коду и упрощает поддержку проекта. Каждая папка может содержать основной компонент и связанные с ним подкомпоненты.
-
-### Правила написания компонентов
-- **Название компонентов**: используем PascalCase (например: `UserCard.vue`, `NewsList.vue`)
-- **Язык**: пока что избегаем TypeScript, пишем на JavaScript
-- **Работа с DOM**: избегаем прямого обращения к DOM элементам
-- **Подход**: работаем через стандартные методы Vue и работу через Virtual DOM
-
-### 📁 /ui
-Тут будут лежать все ваши компоненты компоненты
-
-### 📁 /shadcn-ui
-Тут будут лежать компоненты от shadcn-ui
-
-## 📁 /composables
-В данной директории будут находиться все функциональные компоненты. Каждый файл обязательно должен называться с приставки `use-`.
-
-## 📁 /pages
-В данной директории будут находиться все ваши страницы.
-
-## 📁 /plugins
-В данной директории будут находиться все ваши сторонние (или кастомные) плагины.
-
-## 📁 /public
-В данной директории будут находиться фав-иконки и различные изображения.
-
-## 📁 /utils
-В данной директории будут находиться все служебных функции, например:
-- formatPrice.js - функция для отображения цены в RU формате
-
-## 📁 /tests
-В данной директории будут храниться тесты, например:
-- tests/utils/formatPrice.js - тест для утилса utils/formatPrice.js
-
-# Работа с API
-Для отправки серверных запросов используем кастомный `useRequest`, основанный на `useFetch`,
-для отправки клиентских запросов используем `useClientRequest`, основанный на `$fetch`, в чем разница серверных/клиентских запросов
-можно ознакомить на странице официальной документации [Nuxt](https://nuxt.com/docs/getting-started/data-fetching).
-
-Если вкратце, то клиентские запросы - это обычные, всем нам известные запросы, которые мы использовали во `Vue 3`,
-`Vue 2`, `React` и т.д., они выполняются на стороне клиента, либо при монтировании страницы, либо при взаимодействии
-с пользователем. Серверные же запросы, исходя из названия выполняются еще на стороне сервера, еще до монтирования страницы,
-но во время гидрации (или регидрации - это одно и тоже), сделано это для того,
-чтобы у пользователя не было ситуации, где данных еще нет, ему в любом случае уже придет готовый `html`
-
-## Пример запросов
-Вы можете ознакомиться с ним открыв файл: pages/api.vue
-
-# Комментирование кода
-В каких случаях требуется комментирование кода:
-
-- Объяснение цели или назначения определенного блока кода, если она не очевидна.
-- Описание сложных алгоритмов или логики, которые могут быть сложно понятны для других разработчиков.
-- Указание на предполагаемые ошибки или проблемы, которые могут возникнуть в коде.
-- Описание намерений или целей разработчика при написании определенного фрагмента кода, если она не очевидна.
-- Комментирование важных или критических частей кода для обеспечения понимания других разработчиков.
-
-Пример, когда не стоит писать комментарий ❌:
-```js
-// Это объект, который представляет пользователя
-const user = {
-	name: "John Doe",
-	age: 30,
-	email: "john.doe@example.com"
-};
-```
-```js
-// Функция для суммирования чисел
-const add = (a, b) => a + b;
-```
-Но если мы создали `utils`, который помогает нам с суммированием, то описываем его следующим образом:
-```js
-/**
- * Функция для суммирования двух чисел.
- * @param a - Первое число для суммирования.
- * @param b - Второе число для суммирования.
- * @return {number} Сумма двух чисел.
- */
-const add = (a, b) => {
-	return a + b;
-}
-```
-
-# Работа с формами
-Вы можете ознакомиться с ним открыв файл: pages/form.vue
-
-# Работа с глобальным хранилищем
-Вы можете ознакомиться с ним открыв файл: pages/pinia.vue
-
-# Работа с Тестами
-## Когда нужно писать тесты:
-- Функциональные изменения или добавление новых фич.
-- Для бизнес-логики: (расчёты, фильтры, сортировка, валидация форм и прочее)
-- Регрессия: Если ранее работавшая функциональность неожиданно выходит из строя, то его нужно покрывать тестами
-- Цепочка действий компонентов: будет полезно написать тест для последовательного выполнения цепочки действий, например: есть форма с несколькими шагами и возможными различными исходами.
-
-## Основные методы и функции для тестов
-*<span style="background-color:rgb(49, 49, 49); color: red; padding: 2px; border-radius: 3px">describe</span>* <br>
-Метод *<span style="background-color:rgb(49, 49, 49); color: red; padding: 2px; border-radius: 3px">describe</span>* нужен для группировки связанных тестов.
-
-*<span style="background-color:rgb(49, 49, 49); color: red; padding: 2px; border-radius: 3px">test</span>* и *<span style="background-color:rgb(49, 49, 49); color: red; padding: 2px; border-radius: 3px">it</span>*<br>
-Метод *<span style="background-color:rgb(49, 49, 49); color: red; padding: 2px; border-radius: 3px">test / it</span>* используется для создания и определения отдельного теста. Он принимает два аргумента:
-
-- **Первый аргумент** — строка, описывающая, что именно проверяется в тесте. Это название теста, которое помогает понять, какой функционал тестируется.
-
-- **Второй аргумент** — функция, которая содержит код, выполняющий проверку (или сам тест). В этой функции обычно используется один или несколько методов для проверки утверждений.
-
-*<span style="background-color:rgb(49, 49, 49); color: red; padding: 2px; border-radius: 3px">test</span>* и *<span style="background-color:rgb(49, 49, 49); color: red; padding: 2px; border-radius: 3px">it</span>*  это практически идентичные функции,  разница только в названии. Испоьзуется в связке с *<span style="background-color:rgb(49, 49, 49); color: red; padding: 2px; border-radius: 3px">describe</span>* для лучшей читаемости.
-
-*<span style="background-color:rgb(49, 49, 49); color: red; padding: 2px; border-radius: 3px">expect</span>* <br>
-- Проверять соответствие значений ожидаемому результату
-
-- Тестировать различные условия
-
-- Выводить понятные сообщения об ошибках
-
-Основыные проверки:
-
-- ```js
-	.toBe() - строгое сравнение (===)
-	```
-
-- ```js
-	.toEqual() - глубокое сравнение объектов
-	```
-
-- ```js
-	.toBeTruthy()</span> - проверка на true
-	```
-
-- ```js
-	.toBeFalsy() - проверка на false
-	```
-
-- ```js
-	.toContain()</span> - проверка наличия в массиве
-	```
-
-- ```js
-	.toThrow() - проверка на ошибку
-	```
-Настройка тестовой среды с использованием Pinia
-
-```js
-import { setActivePinia, createPinia } from 'pinia';
-import { user } from '@/stores/user';
-
-describe('User Store', () => {
-	beforeEach(() => {
-		// Создаем новое хранилище перед каждым тестом
-		setActivePinia(createPinia());
-	});
-});
-```
-
-### Полезные ресурсы
-- Документация vitest - https://vitest.dev/
-- Гайд от накста по тестам - https://nuxt.com/docs/getting-started/testing
-- Тот же гайд от накста, но на русском - https://nuxt-ru.vercel.app/docs/getting-started/testing
-- Видеогайд по тестом ( на английском ) - https://www.youtube.com/watch?v=yGzwk9xi9gU
-
-# Команды
-
-## Установка
-Обязательно установите зависимости:
 ```bash
 npm install
 ```
 
-## Запуск локальной версии
-Запустите сервер разработки на `http://localhost:3000` (если не занят):
-```bash
-npm run dev
+### Создание `.env`
+
+```env
+NUXT_SESSION_PASSWORD=levlani-super-secret-session-password-32chars
+NUXT_DB_FILE_NAME=./data/levlani.db
+NUXT_ADMIN_EMAIL=admin@levlani.com
+NUXT_ADMIN_PASSWORD=admin123
 ```
 
-## Сборка проекта
-Сборка для продакшена:
+### Запуск
+
 ```bash
-npm run build
+npm run dev    # разработка → http://localhost:3000
 ```
 
-Локальный предварительный просмотр сборки:
+База данных создаётся **автоматически** при первом запуске — таблицы и начальные данные добавляются через встроенную авто-миграцию в `server/database/index.ts`.
+
+### Скрипты
+
 ```bash
-npm run preview
+npm run build         # продакшн-сборка
+npm run preview       # предпросмотр build локально
+npm run db:generate   # сгенерировать SQL через drizzle-kit
+npm run db:migrate    # применить миграции вручную
+npm run db:studio     # Drizzle Studio → http://localhost:4983
 ```
 
-Для получения дополнительной информации ознакомьтесь с [документацией по развертыванию](https://nuxt.com/docs/getting-started/deployment).
+---
 
-# Используемые плагины
-маска: https://beholdr.github.io/maska/v3/
-нотификации: https://www.npmjs.com/package/vue-toast-notification
+## Переменные окружения
 
-# Рекомендации
-- Если вам нужно использовать слайдер на проекте: https://swiperjs.com/
-- Если вам нужно использовать click-outside и другие приколы используйте: https://vueuse.org/
-- Если вы не можете разобраться с grid сеткой: https://cssgrid-generator.netlify.app/
-- Если вы не можете разобраться с flex сеткой: https://angrytools.com/css-flex/
-- Если вам нужно конвертнуть фавиконку: https://favicon.io/favicon-converter/
-- Если вам нужно конвертнуть шрифты: https://transfonter.org/
+| Переменная | Описание |
+|---|---|
+| `NUXT_SESSION_PASSWORD` | Ключ шифрования cookie-сессии (минимум 32 символа) |
+| `NUXT_DB_FILE_NAME` | Путь к SQLite-файлу (по умолчанию `./data/levlani.db`) |
+| `NUXT_ADMIN_EMAIL` | Email администратора для входа |
+| `NUXT_ADMIN_PASSWORD` | Пароль администратора |
+
+Все значения доступны **только на сервере** через `useRuntimeConfig()` — никогда не попадают в клиентский JS-бандл.
+
+---
+
+## База данных
+
+SQLite-файл: `./data/levlani.db` (создаётся автоматически).
+
+### Таблицы
+
+**`submissions`** — заявки на запись
+```
+id, name, phone, service, message, created_at
+```
+
+**`reviews`** — отзывы клиентов
+```
+id, author, service, text, rating, approved (0/1), created_at
+```
+
+**`services`** — услуги салона
+```
+id, title, description, price, icon, order, active (0/1), created_at
+```
+
+**`masters`** — мастера
+```
+id, name, role, spec, exp, initial, photo, active (0/1), order, created_at
+```
+
+### Автосидирование
+
+При первом запуске добавляются:
+- **6 услуг** (Стрижка, Окрашивание, Укладка, Маникюр, Брови, Уход за лицом)
+- **8 отзывов** с `approved=1` — разбросаны по датам за последние 2 месяца
+
+---
+
+## API-эндпоинты
+
+### Публичные
+
+| Метод | URL | Тело / Описание |
+|---|---|---|
+| `GET` | `/api/services` | Активные услуги (active=1, по order) |
+| `GET` | `/api/reviews` | Одобренные отзывы (approved=1) |
+| `GET` | `/api/masters` | Активные мастера (по order) |
+| `POST` | `/api/contact` | `{ name, phone, service, message? }` → заявка |
+| `POST` | `/api/reviews` | `{ author, service, text, rating? }` → отзыв (approved=0) |
+| `POST` | `/api/auth/login` | `{ email, password }` → сессия |
+| `POST` | `/api/auth/logout` | Удалить сессию |
+
+### Защищённые (сессия обязательна)
+
+| Метод | URL | Описание |
+|---|---|---|
+| `GET` | `/api/submissions` | Все заявки (requireUserSession) |
+
+---
+
+## Публичный сайт
+
+`pages/index.vue` — список секций вертикально:
+
+| Компонент | Якорь | Описание |
+|---|---|---|
+| `HeroSection` | — | Полноэкранный hero, 3D-параллакс мышью, GSAP-анимация слов |
+| `MarqueeSection` | — | Анимированная надпись "Lev & Lani" со звёздами при скролле |
+| `StatsSection` | — | 4 счётчика (лет опыта, клиентов и т.д.) с count-up анимацией |
+| `ServicesSection` | `#services` | Карточки услуг из БД, fade-in при скролле |
+| `MoodSection` | — | Визуальная секция с атмосферными изображениями |
+| `MastersSection` | — | Карточки мастеров из БД |
+| `ProcessSection` | `#process` | 4 шага работы с клиентом |
+| `ReviewsSection` | — | Карусель одобренных отзывов + форма оставить отзыв |
+| `ContactSection` | `#contact` | Форма записи (Vuelidate + maska для телефона) |
+
+### Navbar
+
+`AppNavbar` — фиксированный, прозрачный → тёмный (blur) при скролле > 80px. Кнопка Palette открывает попап с 5 точками-темами. На мобильных — бургер-меню с темами внутри.
+
+---
+
+## Панель администратора
+
+Адрес: `/admin/login` → `/admin`.
+
+**Вход:** сравнивает email/пароль с `.env` переменными → создаёт sealed cookie-сессию. Выход — `POST /api/auth/logout` + редирект на `/admin/login`.
+
+### Разделы
+
+| Страница | Описание |
+|---|---|
+| `/admin` | Таблица всех заявок (имя, телефон, услуга, дата) |
+| `/admin/services` | CRUD услуг: название, описание, цена, иконка, порядок |
+| `/admin/masters` | CRUD мастеров: фото/инициал, специализация, опыт |
+| `/admin/reviews` | Модерация: одобрить / скрыть / удалить отзыв |
+| `/admin/theme` | Выбор цветовой темы (дублирует кнопку в navbar) |
+
+### Диалог подтверждения
+
+Опасные действия (удаление) открывают `UiConfirmDialog` через `useConfirmDialogStore`:
+```js
+store.openDialog({
+  title: 'Удалить услугу?',
+  message: 'Это действие нельзя отменить.',
+  onConfirm: () => deleteService(id),
+});
+```
+
+---
+
+## Система тем
+
+Composable `composables/useTheme.ts` + плагин `plugins/theme.client.ts`.
+
+**Механизм:**
+1. При старте `theme.client.ts` → `initTheme()` читает `localStorage['levlani-theme']`
+2. `applyTheme(id)` → `document.documentElement.setAttribute('data-theme', id)`
+3. CSS: `[data-theme="violet"] .class { color: var(--accent); }` реагирует автоматически
+4. Выбор сохраняется в `localStorage` — у каждого посетителя своя тема
+
+---
+
+## Анимации GSAP
+
+Все в `composables/useGsapAnimations.ts`. Используют **динамический import** — GSAP не включается в серверный рендер.
+
+| Функция | Используется в | Описание |
+|---|---|---|
+| `animateHeroEntrance(sel)` | HeroSection | Слова летят снизу (y:50→0, stagger) при загрузке |
+| `animateScrollCards(sel)` | Services, Masters | Карточки снизу при входе в viewport (once) |
+| `animateNavbar(el)` | AppNavbar | `.scrolled` класс при scroll > 80px |
+| `animateSectionTitle(sel)` | Services, Process | Заголовок fade-in при скролле |
+| `animateCounters(sel)` | StatsSection | Count-up по data-target атрибуту |
+| `animateFadeInUp(sel, stagger)` | Process, Mood | Универсальное появление снизу |
+| `animateParallaxSection(bg, cnt)` | MoodSection | Параллакс фона + fade-in контента |
+
+`MarqueeSection` — собственный inline GSAP-timeline: линия → метка → слова → звёзды → подпись.
+
+---
+
+## Структура файлов
+
+```
+lev-lani/
+├── assets/styles/
+│   ├── base/_variables.scss     — цвета, шрифты, брейкпоинты, темы
+│   ├── base/_mixins.scss        — mq(), transition()
+│   ├── index.scss               — точка входа SCSS
+│   └── tailwind.css             — Tailwind v4
+├── components/
+│   ├── ui/                      — Button, Input, Select, ConfirmDialog, Skeleton
+│   ├── icons/Logo.vue           — логотип с пульсирующим алмазом
+│   ├── services/                — ServicesSection + ServiceCard
+│   ├── contact/ContactSection   — форма записи (ClientOnly + Vuelidate)
+│   ├── admin/SubmissionsTable   — таблица заявок
+│   ├── AppNavbar.vue            — navbar с темами
+│   ├── AppFooter.vue            — подвал
+│   ├── HeroSection.vue          — hero (GSAP + 3D parallax)
+│   ├── MarqueeSection.vue       — бренд-строка со звёздами
+│   ├── StatsSection.vue         — счётчики
+│   ├── MoodSection.vue          — атмосферная секция
+│   ├── MastersSection.vue       — мастера
+│   ├── ProcessSection.vue       — процесс
+│   ├── ReviewsSection.vue       — карусель отзывов
+│   ├── FallingStars.vue         — CSS-частицы (фиксированный фон)
+│   └── HugePreloader.vue        — прелоадер
+├── composables/
+│   ├── useGsapAnimations.ts     — все GSAP-функции
+│   ├── useTheme.ts              — система тем
+│   └── useToast.js              — обёртка toast
+├── layouts/
+│   ├── default.vue              — публичный (navbar + footer)
+│   └── admin.vue                — админка (sidebar + slot)
+├── middleware/auth.ts            — защита /admin/*
+├── pages/
+│   ├── index.vue                — главная
+│   ├── privacy.vue              — политика
+│   └── admin/                   — login, index, services, masters, reviews, theme
+├── plugins/
+│   ├── gsap.client.ts           — GSAP + ScrollTrigger
+│   ├── theme.client.ts          — инициализация темы
+│   ├── toaster.client.ts        — toast уведомления
+│   ├── maska.ts                 — директива v-maska
+│   └── ssr-width.ts             — provideSSRWidth(1024)
+├── server/
+│   ├── api/                     — все эндпоинты
+│   └── database/
+│       ├── schema.ts            — Drizzle-схема
+│       ├── index.ts             — useDatabase() singleton + авто-миграция
+│       └── migrate.ts           — ручной скрипт
+├── stores/confirm-dialog.js      — Pinia диалог
+├── utils/
+│   ├── formatPrice.js           — Intl.NumberFormat рубли
+│   └── getScrollWidth.js        — --scrollbar-width CSS-переменная
+├── data/levlani.db              — SQLite (авто-создаётся)
+├── nuxt.config.ts               — модули, SCSS, runtimeConfig
+└── drizzle.config.ts            — drizzle-kit
+```

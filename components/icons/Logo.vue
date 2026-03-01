@@ -1,7 +1,89 @@
+<!-- ─── Логотип салона ─────────────────────────────────────────────────────────
+     Состав: иконка-алмаз (пульсирующий SVG) + "Lev & Lani" (Cormorant Garamond)
+     + подпись "Beauty Studio" (скрывается на мобильных через mq-миксин).
+     Используется в AppNavbar и AppFooter через <icons-logo />.
+     Амперсанд и "Lani" получают rose-gold градиент через -webkit-text-fill-color. -->
 <template>
-<svg width="54" height="49" viewBox="0 0 54 49" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path fill-rule="evenodd" clip-rule="evenodd" d="M44 22C44 34.1503 34.1503 44 22 44C9.84974 44 0 34.1503 0 22C0 9.84974 9.84974 0 22 0C34.1503 0 44 9.84974 44 22ZM36 22C36 29.732 29.732 36 22 36C14.268 36 8 29.732 8 22C8 14.268 14.268 8 22 8C29.732 8 36 14.268 36 22Z" fill="#282C34"/>
-<path d="M54 36C54 37.6569 52.6569 39 51 39C49.3431 39 48 37.6569 48 36C48 34.3431 49.3431 33 51 33C52.6569 33 54 34.3431 54 36Z" fill="#282C34"/>
-<path d="M54 46C54 47.6569 52.6569 49 51 49C49.3431 49 48 47.6569 48 46C48 44.3431 49.3431 43 51 43C52.6569 43 54 44.3431 54 46Z" fill="#282C34"/>
-</svg>
+	<div class="logo-mark">
+		<div class="logo-mark__gem" aria-hidden>
+			<svg width="11" height="11" viewBox="0 0 12 12" fill="none">
+				<path d="M6 0L7.2 4.8L12 6L7.2 7.2L6 12L4.8 7.2L0 6L4.8 4.8Z" fill="currentColor"/>
+			</svg>
+		</div>
+		<div class="logo-mark__name">
+			<span class="logo-mark__lev">Lev</span>
+			<span class="logo-mark__amp">&</span>
+			<span class="logo-mark__lani">Lani</span>
+		</div>
+		<span class="logo-mark__sub">Beauty Studio</span>
+	</div>
 </template>
+
+<style lang="scss">
+.logo-mark {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	text-decoration: none;
+	line-height: 1;
+}
+
+.logo-mark__gem {
+	color: $roseGold;
+	animation: logo-gem-pulse 3s ease-in-out infinite;
+	flex-shrink: 0;
+	filter: drop-shadow(0 0 4px rgba(196,129,139,0.6));
+}
+
+@keyframes logo-gem-pulse {
+	0%, 100% { opacity: 0.85; transform: scale(1) rotate(0deg); }
+	50%       { opacity: 1;    transform: scale(1.15) rotate(15deg); filter: drop-shadow(0 0 9px rgba(196,129,139,0.9)); }
+}
+
+.logo-mark__name {
+	display: flex;
+	align-items: baseline;
+	gap: 4px;
+	font-family: $headingFont;
+	font-weight: 400;
+	font-size: 1.5rem;
+	letter-spacing: 0.02em;
+}
+
+.logo-mark__lev {
+	color: $champagne;
+	font-weight: 300;
+}
+
+.logo-mark__amp {
+	font-style: italic;
+	font-size: 1.1rem;
+	background: linear-gradient(120deg, $roseGold, $champagne);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-clip: text;
+	padding: 0 1px;
+}
+
+.logo-mark__lani {
+	font-style: italic;
+	background: linear-gradient(120deg, $roseGold, $champagne);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-clip: text;
+}
+
+.logo-mark__sub {
+	font-size: 0.56rem;
+	font-weight: 600;
+	letter-spacing: 0.22em;
+	text-transform: uppercase;
+	color: rgba(196,129,139,0.5);
+	align-self: flex-end;
+	margin-bottom: 2px;
+
+	@include mq(0, $tablet) {
+		display: none;
+	}
+}
+</style>

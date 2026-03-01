@@ -1,31 +1,23 @@
 @import url('@/assets/styles/base/_fonts.scss');
 @import url('@/assets/styles/base/_global.scss');
 
-*, *::after, *::before
-{
+*,
+*::after,
+*::before {
 	box-sizing: border-box;
 	margin: 0;
 	padding: 0;
 	scroll-behavior: smooth;
 	font-family: $firstFont;
-	color: $black;
 }
 
-body
-{
+body {
 	&:has(.huge-preloader) { overflow: hidden; }
 }
 
 a { text-decoration: none; }
 
-.container
-{
-	max-width: $desktop;
-	margin: 0 auto;
-	padding: 0;
-}
-
-// transition -----------
+// transition
 .v-enter-active,
 .v-leave-active { transition: opacity 0.2s ease; }
 
@@ -33,20 +25,22 @@ a { text-decoration: none; }
 .v-leave-to { opacity: 0; }
 
 // toaster
-.v-toast { z-index: 999999!important; padding: 10px!important; }
+.v-toast { z-index: 999999 !important; padding: 10px !important; }
 
-.v-toast__item
-{
-	min-height: 0!important;
-	border-radius: 0!important;
-	padding: 10px 20px;
+.v-toast__item {
+	min-height: 0 !important;
+	border-radius: 8px !important;
+	padding: 12px 20px;
+	background: $bgCard2 !important;
+	border: 1px solid $border !important;
 
-	.v-toast__icon { display: none!important; }
-	.v-toast__text
-	{
-		padding: 0!important;
-		color: $white!important;
+	.v-toast__icon { display: none !important; }
+	.v-toast__text {
+		padding: 0 !important;
+		color: $textPrimary !important;
+		font-size: 0.9rem;
 	}
 
-	&--error { background-color: $red!important; }
+	&--success { border-color: rgba(196, 129, 139, 0.3) !important; }
+	&--error { background-color: rgba(255, 77, 109, 0.1) !important; border-color: rgba(255, 77, 109, 0.3) !important; }
 }
