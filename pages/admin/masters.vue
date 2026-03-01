@@ -1,8 +1,13 @@
 <script setup>
+/**
+ * CRUD мастеров: фото/инициал, специализация, опыт, порядок.
+ */
 definePageMeta({ middleware: 'auth', layout: 'admin' });
 useSeoMeta({ title: 'Мастера — Lev & Lani Admin' });
 
-const { data: masters, refresh } = await useFetch('/api/admin/masters');
+// variables
+const { mastersApi } = useApi();
+const { data: masters, refresh } = await mastersApi.getAdminMasters();
 
 const showForm = ref(false);
 const editingId = ref(null);
@@ -29,24 +34,26 @@ const save = async () => {
 	if (!form.name || !form.role || !form.initial) return;
 	saving.value = true;
 	try {
-		if (editingId.value) {
-			await $fetch(`/api/admin/masters/${editingId.value}`, { method: 'PUT', body: { ...form } });
-		} else {
-			await $fetch('/api/admin/masters', { method: 'POST', body: { ...form } });
-		}
+		if (editingId.value)
+			await mastersApi.updateMaster(editingId.value, { ...form });
+		else
+			await mastersApi.createMaster({ ...form });
 		await refresh();
 		cancel();
-	} finally { saving.value = false; }
+	}
+	finally {
+		saving.value = false;
+	}
 };
 
 const toggleActive = async (m) => {
-	await $fetch(`/api/admin/masters/${m.id}`, { method: 'PUT', body: { active: m.active ? 0 : 1 } });
+	await mastersApi.toggleMasterActive(m);
 	await refresh();
 };
 
 const deleteMaster = async (id) => {
 	if (!confirm('Удалить мастера?')) return;
-	await $fetch(`/api/admin/masters/${id}`, { method: 'DELETE' });
+	await mastersApi.deleteMaster(id);
 	await refresh();
 };
 

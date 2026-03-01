@@ -1,17 +1,22 @@
 <script setup>
+/**
+ * Модерация отзывов: одобрить / скрыть / удалить.
+ */
 definePageMeta({ middleware: 'auth', layout: 'admin' });
 useSeoMeta({ title: 'Отзывы — Lev & Lani Admin' });
 
-const { data: reviews, refresh } = await useFetch('/api/admin/reviews');
+// variables
+const { reviewsApi } = useApi();
+const { data: reviews, refresh } = await reviewsApi.getAdminReviews();
 
 const toggleApproved = async (r) => {
-	await $fetch(`/api/admin/reviews/${r.id}`, { method: 'PATCH', body: { approved: !r.approved } });
+	await reviewsApi.patchReview(r.id, { approved: !r.approved });
 	await refresh();
 };
 
 const deleteReview = async (id) => {
 	if (!confirm('Удалить отзыв?')) return;
-	await $fetch(`/api/admin/reviews/${id}`, { method: 'DELETE' });
+	await reviewsApi.deleteReview(id);
 	await refresh();
 };
 

@@ -95,109 +95,121 @@ onMounted(() => {
 </template>
 
 <style lang="scss">
-.ui-select {
+.ui-select
+{
 	display: flex;
 	flex-direction: column;
 	gap: 6px;
 	position: relative;
 
-	&__label {
-		font-size: 0.78rem;
-		font-weight: 500;
-		letter-spacing: 0.04em;
-		color: $textSecondary;
-		cursor: pointer;
-		@include transition();
+	&.is-open .ui-select__trigger
+	{
+		border-color: $borderFocus;
+		background: rgba(196,129,139,0.04);
 	}
 
-	&__trigger {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		gap: 8px;
-		padding: 11px 16px;
-		background: rgba(255,255,255,0.04);
-		border: 1px solid $border;
-		border-radius: 10px;
-		cursor: pointer;
-		outline: none;
-		@include transition();
-		user-select: none;
-
-		&:hover {
-			border-color: $borderHover;
-			background: rgba(255,255,255,0.055);
-		}
-	}
-
-	&__value {
-		font-size: 0.9rem;
-		color: $textPrimary;
-	}
-
-	&__placeholder {
-		font-size: 0.9rem;
-		color: $textMuted;
-	}
-
-	&__arrow {
-		color: $textSecondary;
-		flex-shrink: 0;
-		@include transition();
-	}
-
-	&__dropdown {
-		background: $bgCard2;
-		border: 1px solid $borderHover;
-		border-radius: 10px;
-		overflow: hidden;
-		box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-	}
-
-	&__option {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		padding: 10px 16px;
-		font-size: 0.88rem;
-		color: $textSecondary;
-		cursor: pointer;
-		@include transition();
-
-		&:hover { background: rgba(255,255,255,0.05); color: $textPrimary; }
-		&.is-active { color: $roseGoldLight; }
-	}
-
-	&__error {
-		font-size: 0.73rem;
-		color: $red;
-	}
-
-	// States
-	&.is-open {
-		.ui-select__trigger {
-			border-color: $borderFocus;
-			background: rgba(196,129,139,0.04);
-		}
-		.ui-select__arrow { transform: rotate(180deg); }
-		.ui-select__label { color: $roseGoldLight; }
-	}
+	&.is-open .ui-select__arrow { transform: rotate(180deg); }
+	&.is-open .ui-select__label { color: $roseGoldLight; }
 
 	&.is-filled .ui-select__label { color: $roseGoldLight; }
 
-	&.is-error .ui-select__trigger {
+	&.is-error .ui-select__trigger
+	{
 		border-color: rgba(255,77,109,0.5);
 		background: rgba(255,77,109,0.04);
 	}
 }
 
-// Dropdown transition
+.ui-select__label
+{
+	font-size: 0.78rem;
+	font-weight: 500;
+	letter-spacing: 0.04em;
+	color: $textSecondary;
+	cursor: pointer;
+	@include transition();
+}
+
+.ui-select__trigger
+{
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	padding: 11px 16px;
+	background: rgba(255,255,255,0.04);
+	border: 1px solid $border;
+	border-radius: 10px;
+	cursor: pointer;
+	outline: none;
+	@include transition();
+	user-select: none;
+
+	&:hover
+	{
+		border-color: $borderHover;
+		background: rgba(255,255,255,0.055);
+	}
+}
+
+.ui-select__value
+{
+	font-size: 0.9rem;
+	color: $textPrimary;
+}
+
+.ui-select__placeholder
+{
+	font-size: 0.9rem;
+	color: $textMuted;
+}
+
+.ui-select__arrow
+{
+	color: $textSecondary;
+	flex-shrink: 0;
+	@include transition();
+}
+
+.ui-select__dropdown
+{
+	background: $bgCard2;
+	border: 1px solid $borderHover;
+	border-radius: 10px;
+	overflow: hidden;
+	box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+}
+
+.ui-select__option
+{
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 10px 16px;
+	font-size: 0.88rem;
+	color: $textSecondary;
+	cursor: pointer;
+	@include transition();
+
+	&:hover { background: rgba(255,255,255,0.05); color: $textPrimary; }
+	&.is-active { color: $roseGoldLight; }
+}
+
+.ui-select__error
+{
+	font-size: 0.73rem;
+	color: $red;
+}
+
 .select-drop-enter-active,
-.select-drop-leave-active {
+.select-drop-leave-active
+{
 	transition: opacity 0.15s ease, transform 0.15s ease;
 }
+
 .select-drop-enter-from,
-.select-drop-leave-to {
+.select-drop-leave-to
+{
 	opacity: 0;
 	transform: translateY(-6px);
 }

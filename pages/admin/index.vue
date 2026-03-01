@@ -1,13 +1,20 @@
 <script setup>
+/**
+ * Список заявок на запись. Таблица + статистика.
+ */
 definePageMeta({ middleware: 'auth', layout: 'admin' });
 useSeoMeta({ title: 'Заявки — Lev & Lani Admin', robots: 'noindex, nofollow' });
 
-const { data: submissions, refresh } = await useFetch('/api/submissions');
+// variables
+const { submissionsApi } = useApi();
+const { data: submissions, refresh } = await submissionsApi.getSubmissions();
 
 const total = computed(() => submissions.value?.length ?? 0);
-const today = computed(() => {
+const today = computed(() =>
+{
 	const todayStr = new Date().toDateString();
-	return submissions.value?.filter(s => {
+	return submissions.value?.filter(s =>
+	{
 		const d = s.createdAt ? new Date(typeof s.createdAt === 'number' ? s.createdAt * 1000 : s.createdAt) : null;
 		return d && d.toDateString() === todayStr;
 	}).length ?? 0;

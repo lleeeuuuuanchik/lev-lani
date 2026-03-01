@@ -1,18 +1,17 @@
 <script setup>
-// ─── Секция услуг ─────────────────────────────────────────────────────────────
-// Загружает список услуг через GET /api/services (данные из SQLite).
-// Администратор управляет услугами через /admin/services.
-// Карточки анимируются снизу при скролле (ScrollTrigger через useGsapAnimations).
-// ServiceCard — отдельный компонент: components/services/ServiceCard.vue.
+/**
+ * Секция услуг: данные из API, карточки анимируются при скролле (useGsapAnimations).
+ */
 
 import { useGsapAnimations } from '@/composables/useGsapAnimations';
 
+// variables
 const { animateScrollCards, animateSectionTitle } = useGsapAnimations();
+const { servicesApi } = useApi();
+const { data: services } = await servicesApi.getServices();
 
-// useFetch — SSR-совместимый запрос; данные кешируются и переиспользуются при гидрации
-const { data: services } = await useFetch('/api/services');
-
-onMounted(() => {
+onMounted(() =>
+{
 	animateSectionTitle('.services__head');
 	animateScrollCards('.service-card');
 });

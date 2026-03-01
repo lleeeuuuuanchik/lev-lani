@@ -10,7 +10,8 @@
 </template>
 
 <style lang="scss">
-.falling-stars {
+.falling-stars
+{
 	position: fixed;
 	inset: 0;
 	pointer-events: none;
@@ -18,7 +19,8 @@
 	overflow: hidden;
 }
 
-.falling-stars__star {
+.falling-stars__star
+{
 	position: absolute;
 	width: 1.5px;
 	border-radius: 2px;
@@ -34,8 +36,8 @@
 	transform: rotate(35deg);
 	animation: star-fast linear infinite;
 
-	// Star 1: falls fast in first 5% of its 28s cycle → visible ~1.4s every 28s
-	&--1 {
+	&--1
+	{
 		left: 18%;
 		top: -100px;
 		height: 52px;
@@ -43,8 +45,8 @@
 		animation-delay: 2s;
 	}
 
-	// Star 2: different position, different period → rarely overlaps star 1
-	&--2 {
+	&--2
+	{
 		left: 72%;
 		top: -100px;
 		height: 44px;

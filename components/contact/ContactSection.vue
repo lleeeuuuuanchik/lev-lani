@@ -1,18 +1,15 @@
 <script setup>
-// ─── Секция записи на услугу ──────────────────────────────────────────────────
-// 2-колоночный layout: информационный блок слева + форма справа.
-// Форма обёрнута в <ClientOnly> чтобы Vuelidate не крашила SSR
-// (Vuelidate обращается к DOM при инициализации).
-//
-// Валидация: Vuelidate (клиент) → POST /api/contact → Zod (сервер).
-// После успешной отправки форма сбрасывается, показывается toast.
-// Телефон вводится с маской через ui/Input isPhone=true.
+/**
+ * Секция записи: 2 колонки (инфо + форма). Vuelidate + maska для телефона. ClientOnly из-за Vuelidate/SSR.
+ */
 
 import useVuelidate from '@vuelidate/core';
 import { required, minLength } from '@vuelidate/validators';
 import { useToast } from '@/composables/useToast';
 
+// variables
 const { showSuccess, showError } = useToast();
+const { contactApi } = useApi();
 
 const serviceOptions = [
 	{ value: 'Стрижка', label: 'Стрижка' },
@@ -34,21 +31,25 @@ const rules = {
 const v$ = useVuelidate(rules, form);
 const loading = ref(false);
 
-const submit = async () => {
+// functions
+const submit = async () =>
+{
 	const valid = await v$.value.$validate();
 	if (!valid) return;
 	loading.value = true;
-	try {
-		await $fetch('/api/contact', {
-			method: 'POST',
-			body: { name: form.name, phone: form.phone, service: form.service, message: form.message },
-		});
+	try
+	{
+		await contactApi.submitContact({ name: form.name, phone: form.phone, service: form.service, message: form.message });
 		showSuccess('Заявка отправлена! Свяжемся с вами в ближайшее время.');
 		form.name = ''; form.phone = ''; form.service = ''; form.message = '';
 		v$.value.$reset();
-	} catch {
+	}
+	catch
+	{
 		showError('Что-то пошло не так. Попробуйте ещё раз.');
-	} finally {
+	}
+	finally
+	{
 		loading.value = false;
 	}
 };

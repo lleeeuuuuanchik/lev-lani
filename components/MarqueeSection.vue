@@ -1,7 +1,10 @@
 <script setup>
-const sectionRef = ref(null);
+/**
+ * Бренд-строка «Lev & Lani» со звёздами. GSAP-timeline при скролле (ScrollTrigger).
+ */
 
-// Static star positions — safe for SSR (no random on client)
+// variables
+const sectionRef = ref(null);
 const stars = [
 	{ x: 5,  y: 20, s: 3 },
 	{ x: 12, y: 72, s: 5 },
@@ -15,7 +18,8 @@ const stars = [
 	{ x: 47, y: 55, s: 4 },
 ];
 
-onMounted(async () => {
+onMounted(async () =>
+{
 	if (!import.meta.client) return;
 
 	const [{ gsap }, { ScrollTrigger }] = await Promise.all([

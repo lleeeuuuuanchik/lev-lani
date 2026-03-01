@@ -1,8 +1,12 @@
 <script setup>
+/**
+ * Секция мастеров: основатель + карточки из API. Fade-in при скролле.
+ */
+
 import { useGsapAnimations } from '@/composables/useGsapAnimations';
 
+// variables
 const { animateFadeInUp } = useGsapAnimations();
-
 const founder = {
 	name: 'Меладзе Тея',
 	role: 'Основатель · Стилист',
@@ -12,10 +16,11 @@ const founder = {
 	quote: 'Красота — это не стандарт, это свобода быть собой',
 	photo: '/images/founder.jpg',
 };
+const { mastersApi } = useApi();
+const { data: masters } = await mastersApi.getMasters();
 
-const { data: masters } = await useFetch('/api/masters');
-
-onMounted(() => {
+onMounted(() =>
+{
 	animateFadeInUp('.master-card', 0.1);
 	animateFadeInUp('.founder-card', 0);
 });
@@ -289,15 +294,15 @@ onMounted(() => {
 	.br-desktop { display: none; @include mq($laptop) { display: block; } }
 }
 
-// ─── Founder featured card ───────────────────────────────────
+// ─── Founder featured card (цвета от темы: --accent, --accent-rgb) ───────────
 .founder-card {
 	position: relative;
 	z-index: 1;
 	display: flex;
 	align-items: center;
 	gap: 48px;
-	background: rgba(196,129,139,0.04);
-	border: 1px solid rgba(196,129,139,0.2);
+	background: rgba(var(--accent-rgb), 0.04);
+	border: 1px solid rgba(var(--accent-rgb), 0.2);
 	border-radius: 24px;
 	padding: 40px 48px;
 	margin-bottom: 24px;
@@ -305,10 +310,10 @@ onMounted(() => {
 	@include transition();
 
 	&:hover {
-		border-color: rgba(196,129,139,0.35);
-		box-shadow: 0 0 60px rgba(196,129,139,0.08);
-		.founder-card__glow { opacity: 1; }
+		border-color: rgba(var(--accent-rgb), 0.35);
+		box-shadow: 0 0 60px var(--accent-glow);
 	}
+	&:hover .founder-card__glow { opacity: 1; }
 
 	@include mq(0, $laptop) { flex-direction: column; align-items: flex-start; gap: 32px; padding: 32px 28px; }
 }
@@ -316,7 +321,7 @@ onMounted(() => {
 .founder-card__glow {
 	position: absolute;
 	inset: 0;
-	background: radial-gradient(ellipse at 30% 50%, rgba(196,129,139,0.06) 0%, transparent 60%);
+	background: radial-gradient(ellipse at 30% 50%, rgba(var(--accent-rgb), 0.06) 0%, transparent 60%);
 	opacity: 0;
 	@include transition();
 	pointer-events: none;
@@ -344,13 +349,13 @@ onMounted(() => {
 	object-position: center top;
 	position: relative;
 	z-index: 1;
-	box-shadow: 0 0 30px rgba(196,129,139,0.3);
+	box-shadow: 0 0 30px rgba(var(--accent-rgb), 0.3);
 }
 
 .founder-card__avatar {
 	width: 96px; height: 96px;
 	border-radius: 50%;
-	background: linear-gradient(135deg, $roseGoldDark, $roseGold);
+	background: linear-gradient(135deg, var(--accent-dark), var(--accent));
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -361,19 +366,18 @@ onMounted(() => {
 	position: absolute;
 	inset: 0;
 	z-index: 0;
-	box-shadow: 0 0 30px rgba(196,129,139,0.3);
+	box-shadow: 0 0 30px rgba(var(--accent-rgb), 0.3);
 }
 
 .founder-card__avatar-ring {
 	position: absolute;
 	border-radius: 50%;
-	border: 1px solid rgba(196,129,139,0.35);
+	border: 1px solid rgba(var(--accent-rgb), 0.35);
 	@include transition();
 	pointer-events: none;
-
-	&:first-of-type { inset: -8px; }
-	&--2 { inset: -16px; border-color: rgba(196,129,139,0.15); }
 }
+.founder-card__avatar-ring:first-of-type { inset: -8px; }
+.founder-card__avatar-ring--2 { inset: -16px; border-color: rgba(var(--accent-rgb), 0.15); }
 
 .founder-card__avatar-stars {
 	position: absolute;
@@ -390,29 +394,28 @@ onMounted(() => {
 	align-items: center;
 	gap: 6px;
 	padding: 3px 10px;
-	background: linear-gradient(135deg, rgba(196,129,139,0.18), rgba(232,213,190,0.1));
-	border: 1px solid rgba(196,129,139,0.3);
+	background: linear-gradient(135deg, rgba(var(--accent-rgb), 0.18), rgba(var(--accent-rgb), 0.08));
+	border: 1px solid rgba(var(--accent-rgb), 0.3);
 	border-radius: 4px;
 	font-size: 0.68rem;
 	font-weight: 600;
 	letter-spacing: 0.12em;
 	text-transform: uppercase;
-	color: $roseGoldLight;
+	color: var(--accent-light);
 	width: fit-content;
-
-	&::before {
-		content: '';
-		width: 5px; height: 5px;
-		border-radius: 50%;
-		background: $roseGold;
-		box-shadow: 0 0 6px $roseGold;
-	}
+}
+.founder-card__badge::before {
+	content: '';
+	width: 5px; height: 5px;
+	border-radius: 50%;
+	background: var(--accent);
+	box-shadow: 0 0 6px var(--accent);
 }
 
 .founder-card__name { font-size: 1.3rem; font-weight: 500; color: $textPrimary; font-family: $headingFont; }
-.founder-card__role { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: $roseGold; }
+.founder-card__role { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
 .founder-card__exp { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: $textMuted; margin-top: 2px; }
-.founder-card__exp-dot { width: 4px; height: 4px; border-radius: 50%; background: $roseGold; flex-shrink: 0; }
+.founder-card__exp-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
 
 .founder-card__divider {
 	width: 1px;
@@ -424,7 +427,7 @@ onMounted(() => {
 }
 
 .founder-card__right { flex: 1; display: flex; flex-direction: column; gap: 16px; }
-.founder-card__quote-icon { color: rgba(196,129,139,0.25); flex-shrink: 0; }
+.founder-card__quote-icon { color: rgba(var(--accent-rgb), 0.25); flex-shrink: 0; }
 
 .founder-card__quote {
 	font-family: $headingFont;

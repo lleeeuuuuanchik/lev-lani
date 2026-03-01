@@ -1,13 +1,12 @@
 <script setup>
-// ─── Секция статистики — анимированные счётчики ───────────────────────────────
-// 4 карточки с числами, которые «считаются» при входе в viewport (ScrollTrigger).
-// Данные статичны — меняются вручную в массиве stats.
-// animateCounters ищет элементы с data-target и анимирует их через GSAP.
+/**
+ * Секция счётчиков: count-up при входе в viewport (ScrollTrigger, data-target).
+ */
 
 import { useGsapAnimations } from '@/composables/useGsapAnimations';
 
+// variables
 const { animateCounters } = useGsapAnimations();
-
 const stats = [
 	{ value: '10', suffix: '+', label: 'лет опыта', desc: 'Работаем с 2015 года' },
 	{ value: '3000', suffix: '+', label: 'довольных клиентов', desc: 'Возвращаются снова' },
@@ -15,7 +14,8 @@ const stats = [
 	{ value: '99', suffix: '%', label: 'рекомендуют нас', desc: 'По отзывам клиентов' },
 ];
 
-onMounted(() => {
+onMounted(() =>
+{
 	animateCounters('.stat__value');
 });
 </script>

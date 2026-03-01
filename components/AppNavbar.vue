@@ -1,51 +1,60 @@
 <script setup>
+/**
+ * Navbar: фиксированный, прозрачный → тёмный при скролле. Palette — попап тем. Бургер на мобильных.
+ */
+
 import { Palette } from 'lucide-vue-next';
 import { useGsapAnimations } from '@/composables/useGsapAnimations';
 
+// variables
 const navRef = ref(null);
 const mobileOpen = ref(false);
 const themeOpen = ref(false);
 const themeRef = ref(null);
 const navbarHeight = ref(76);
 const hasAnimated = ref(false);
-
 const { animateNavbar } = useGsapAnimations();
 const { THEMES, currentTheme, applyTheme } = useTheme();
 const route = useRoute();
 const router = useRouter();
 
-onMounted(() => {
+onMounted(() =>
+{
 	if (navRef.value) animateNavbar(navRef.value);
-	document.addEventListener('click', (e) => {
+	document.addEventListener('click', (e) =>
+	{
 		if (themeRef.value && !themeRef.value.contains(e.target)) themeOpen.value = false;
 	});
 });
 
-// Re-measure navbar height + lock scroll when menu opens
-watch(mobileOpen, async (open) => {
+watch(mobileOpen, async (open) =>
+{
 	if (!import.meta.client) return;
 	document.body.style.overflow = open ? 'hidden' : '';
-	if (open) {
+	if (open)
+	{
 		await nextTick();
 		navbarHeight.value = navRef.value?.offsetHeight ?? 76;
-	} else {
+	}
+	else
+	{
 		await nextTick();
-		// Вручную восстанавливаем scrolled-класс — ScrollTrigger не перезапускает onEnter
-		if (navRef.value) {
-			navRef.value.classList.toggle('scrolled', window.scrollY > 80);
-		}
+		if (navRef.value) navRef.value.classList.toggle('scrolled', window.scrollY > 80);
 		const { ScrollTrigger } = await import('gsap/ScrollTrigger');
 		ScrollTrigger.refresh();
 	}
 });
 
-onUnmounted(() => {
+onUnmounted(() =>
+{
 	if (import.meta.client) document.body.style.overflow = '';
 });
 
-const scrollTo = async (id) => {
+const scrollTo = async (id) =>
+{
 	mobileOpen.value = false;
-	if (route.path !== '/') {
+	if (route.path !== '/')
+	{
 		await router.push({ path: '/', hash: id });
 		return;
 	}
@@ -53,7 +62,8 @@ const scrollTo = async (id) => {
 	if (el) el.scrollIntoView({ behavior: 'smooth' });
 };
 
-const selectTheme = (id) => {
+const selectTheme = (id) =>
+{
 	applyTheme(id);
 	themeOpen.value = false;
 };

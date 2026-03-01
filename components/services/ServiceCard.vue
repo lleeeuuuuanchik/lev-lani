@@ -1,6 +1,10 @@
 <script setup>
+/**
+ * Карточка услуги: иконка, название, описание, цена. Schema.org Service + Offer.
+ */
 import { Scissors, Palette, Wind, Hand, Eye, Sparkles, Star, Flower2, Gem, Heart } from 'lucide-vue-next';
 
+// variables
 const iconMap = {
 	scissors: Scissors,
 	palette: Palette,
@@ -14,6 +18,7 @@ const iconMap = {
 	heart: Heart,
 };
 
+// props
 const props = defineProps({
 	title:       { type: String, required: true },
 	description: { type: String, required: true },
@@ -64,7 +69,8 @@ const resolvedIcon = computed(() => iconMap[props.icon] ?? Sparkles);
 </template>
 
 <style lang="scss">
-.service-card {
+.service-card
+{
 	display: flex;
 	flex-direction: column;
 	gap: 20px;
@@ -78,7 +84,8 @@ const resolvedIcon = computed(() => iconMap[props.icon] ?? Sparkles);
 	position: relative;
 	overflow: hidden;
 
-	&::before {
+	&::before
+	{
 		content: '';
 		position: absolute;
 		inset: 0;
@@ -87,34 +94,39 @@ const resolvedIcon = computed(() => iconMap[props.icon] ?? Sparkles);
 		@include transition();
 	}
 
-	&:hover {
+	&:hover
+	{
 		border-color: rgba(196, 129, 139, 0.2);
 		background: rgba(255, 255, 255, 0.04);
 		transform: translateY(-3px);
 		box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(196, 129, 139, 0.08);
-
-		&::before { opacity: 1; }
-
-		.service-card__icon {
-			background: rgba(196, 129, 139, 0.15);
-			border-color: rgba(196, 129, 139, 0.3);
-			color: $roseGoldLight;
-		}
-
-		.service-card__arrow {
-			transform: translateX(3px);
-			color: $roseGold;
-		}
 	}
+
+	&:hover::before { opacity: 1; }
 }
 
-.service-card__head {
+.service-card:hover .service-card__icon
+{
+	background: rgba(196, 129, 139, 0.15);
+	border-color: rgba(196, 129, 139, 0.3);
+	color: $roseGoldLight;
+}
+
+.service-card:hover .service-card__arrow
+{
+	transform: translateX(3px);
+	color: $roseGold;
+}
+
+.service-card__head
+{
 	display: flex;
 	align-items: flex-start;
 	justify-content: space-between;
 }
 
-.service-card__icon {
+.service-card__icon
+{
 	width: 40px;
 	height: 40px;
 	display: flex;
@@ -127,21 +139,24 @@ const resolvedIcon = computed(() => iconMap[props.icon] ?? Sparkles);
 	@include transition();
 }
 
-.service-card__num {
+.service-card__num
+{
 	font-size: 0.7rem;
 	font-weight: 600;
 	letter-spacing: 0.1em;
 	color: $textMuted;
 }
 
-.service-card__body {
+.service-card__body
+{
 	flex: 1;
 	display: flex;
 	flex-direction: column;
 	gap: 10px;
 }
 
-.service-card__title {
+.service-card__title
+{
 	font-family: $headingFont;
 	font-size: 1.35rem;
 	font-weight: 400;
@@ -149,13 +164,15 @@ const resolvedIcon = computed(() => iconMap[props.icon] ?? Sparkles);
 	line-height: 1.2;
 }
 
-.service-card__desc {
+.service-card__desc
+{
 	font-size: 0.85rem;
 	color: $textSecondary;
 	line-height: 1.65;
 }
 
-.service-card__foot {
+.service-card__foot
+{
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
@@ -163,7 +180,8 @@ const resolvedIcon = computed(() => iconMap[props.icon] ?? Sparkles);
 	border-top: 1px solid $border;
 }
 
-.service-card__price {
+.service-card__price
+{
 	font-family: $headingFont;
 	font-size: 1.1rem;
 	font-weight: 400;
@@ -171,7 +189,8 @@ const resolvedIcon = computed(() => iconMap[props.icon] ?? Sparkles);
 	letter-spacing: 0.01em;
 }
 
-.service-card__call {
+.service-card__call
+{
 	display: inline-flex;
 	align-items: center;
 	gap: 6px;
@@ -181,7 +200,5 @@ const resolvedIcon = computed(() => iconMap[props.icon] ?? Sparkles);
 	@include transition();
 }
 
-.service-card:hover .service-card__call {
-	color: $roseGold;
-}
+.service-card:hover .service-card__call { color: $roseGold; }
 </style>

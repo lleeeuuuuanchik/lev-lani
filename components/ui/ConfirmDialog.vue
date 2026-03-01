@@ -1,7 +1,11 @@
 <script setup>
-	import { vOnClickOutside } from '@vueuse/components';
+/**
+ * Модальный диалог подтверждения. Управляется stores/confirm-dialog (useConfirmDialogStore).
+ */
+import { vOnClickOutside } from '@vueuse/components';
 
-	const dialog = useConfirmDialogStore();
+// variables
+const dialog = useConfirmDialogStore();
 </script>
 
 <template>

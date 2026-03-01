@@ -1,23 +1,19 @@
 <script setup>
-// ─── Hero-секция — первый экран сайта ─────────────────────────────────────────
-// Полноэкранная секция (min-h-screen) с:
-//   — GSAP анимацией появления слов (.hero__brand-word) при загрузке
-//   — 3D-параллакс эффектом правой части (.hero__scene) при движении мыши
-//   — бегущей строкой тегов (tickerItems) внизу
-//   — 10 CSS-анимированных частиц (particleAngles — фиксированные углы, SSR-safe)
-// gsap$ — ссылка на gsap-инстанс, доступна только после onMounted (browser-only).
+/**
+ * Hero: полноэкран, GSAP-слова, 3D-параллакс сцены по мыши, бегущая строка, частицы (SSR-safe).
+ */
 
+// variables
 const scrollTo = (id) => document.querySelector(id)?.scrollIntoView({ behavior: 'smooth' });
-// Теги в бегущей строке под заголовком
 const tickerItems = ['Стрижка', 'Окрашивание', 'Укладка', 'Маникюр', 'Брови', 'Уход за лицом', 'Lev & Lani'];
-// Фиксированные углы для частиц — используем Array.from вместо Math.random() для SSR
 const particleAngles = Array.from({ length: 10 }, (_, i) => i * 36);
-
 const heroRef = ref(null);
 const sceneRef = ref(null);
 let gsap$ = null;
 
-const onMouseMove = (e) => {
+// functions
+const onMouseMove = (e) =>
+{
 	if (!sceneRef.value || !heroRef.value || !gsap$) return;
 	const rect = heroRef.value.getBoundingClientRect();
 	const cx = rect.left + rect.width * 0.73;
@@ -27,11 +23,13 @@ const onMouseMove = (e) => {
 	gsap$.to(sceneRef.value, { rotateX: rx, rotateY: ry, duration: 1.6, ease: 'power2.out' });
 };
 
-const onMouseLeave = () => {
+const onMouseLeave = () =>
+{
 	gsap$?.to(sceneRef.value, { rotateX: 0, rotateY: 0, duration: 2.5, ease: 'elastic.out(1, 0.5)' });
 };
 
-onMounted(async () => {
+onMounted(async () =>
+{
 	if (!import.meta.client) return;
 	const { gsap } = await import('gsap');
 	gsap$ = gsap;
@@ -65,7 +63,8 @@ onMounted(async () => {
 	heroRef.value?.addEventListener('mouseleave', onMouseLeave);
 });
 
-onUnmounted(() => {
+onUnmounted(() =>
+{
 	heroRef.value?.removeEventListener('mousemove', onMouseMove);
 	heroRef.value?.removeEventListener('mouseleave', onMouseLeave);
 });
@@ -612,7 +611,7 @@ onUnmounted(() => {
 	to   { transform: translate(-50%, -50%) rotate(360deg) translateX(210px) rotate(-360deg); }
 }
 
-.hero__pill-dot { width: 5px; height: 5px; border-radius: 50%; background: $roseGold; box-shadow: 0 0 6px rgba(196,129,139,0.8); flex-shrink: 0; }
+.hero__pill-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 6px rgba(var(--accent-rgb), 0.8); flex-shrink: 0; }
 
 // ─── Info chips — orbit closer to planet than pills (r=178px, period=36s)
 // top-right=315° → -31.5s | bot-left=135° → -13.5s | bot-right=45° → -4.5s
@@ -625,7 +624,7 @@ onUnmounted(() => {
 .hero__chip--exp {
 	display: flex; flex-direction: column; align-items: center; gap: 1px;
 	padding: 10px 16px; background: rgba(8,10,12,0.78);
-	border: 1px solid rgba(232,213,190,0.18); border-radius: 12px;
+	border: 1px solid rgba(var(--champagne-rgb), 0.18); border-radius: 12px;
 	box-shadow: 0 8px 28px rgba(0,0,0,0.4);
 	animation: orbit-chip 36s linear -31.5s infinite;
 }
@@ -633,7 +632,7 @@ onUnmounted(() => {
 .hero__chip--clients {
 	display: flex; flex-direction: column; align-items: center; gap: 1px;
 	padding: 10px 16px; background: rgba(8,10,12,0.78);
-	border: 1px solid rgba(196,129,139,0.18); border-radius: 12px;
+	border: 1px solid rgba(var(--accent-rgb), 0.18); border-radius: 12px;
 	box-shadow: 0 8px 28px rgba(0,0,0,0.4);
 	animation: orbit-chip 36s linear -13.5s infinite;
 }
@@ -641,9 +640,9 @@ onUnmounted(() => {
 .hero__chip--founder {
 	display: flex; align-items: center; gap: 10px;
 	padding: 10px 16px; background: rgba(8,10,12,0.82);
-	border: 1px solid rgba(196,129,139,0.25); border-radius: 14px;
+	border: 1px solid rgba(var(--accent-rgb), 0.25); border-radius: 14px;
 	white-space: nowrap;
-	box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 20px rgba(196,129,139,0.08);
+	box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 20px var(--accent-glow);
 	animation: orbit-chip 36s linear -4.5s infinite;
 }
 
@@ -654,7 +653,7 @@ onUnmounted(() => {
 
 .hero__chip-val {
 	font-family: $headingFont; font-size: 1.3rem; font-weight: 300; line-height: 1;
-	background: linear-gradient(120deg, $roseGold, $champagne);
+	background: linear-gradient(120deg, var(--accent), var(--champagne));
 	-webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
 }
 
@@ -662,10 +661,10 @@ onUnmounted(() => {
 
 .hero__chip-avatar {
 	width: 34px; height: 34px; border-radius: 50%;
-	background: linear-gradient(135deg, $roseGoldDark, $roseGold);
+	background: linear-gradient(135deg, var(--accent-dark), var(--accent));
 	display: flex; align-items: center; justify-content: center;
 	font-family: $headingFont; font-size: 1rem; font-style: italic;
-	color: $white; flex-shrink: 0; box-shadow: 0 0 14px rgba(196,129,139,0.5);
+	color: $white; flex-shrink: 0; box-shadow: 0 0 14px rgba(var(--accent-rgb), 0.5);
 	overflow: hidden; position: relative;
 }
 
@@ -694,7 +693,7 @@ onUnmounted(() => {
 	display: inline-flex; align-items: center; gap: 14px;
 	font-size: 0.72rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase;
 	color: $textMuted; padding-right: 14px;
-	svg { color: $roseGold; opacity: 0.5; flex-shrink: 0; }
+	svg { color: var(--accent); opacity: 0.5; flex-shrink: 0; }
 }
 
 .hero__bottom-fade {

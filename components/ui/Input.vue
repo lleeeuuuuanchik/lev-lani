@@ -87,84 +87,95 @@ const hasSlotContent = slots.hasOwnProperty('default') && slots.default().length
 </template>
 
 <style lang="scss">
-.ui-input {
+.ui-input
+{
 	display: flex;
 	flex-direction: column;
 	gap: 6px;
 
-	&__label {
-		font-size: 0.78rem;
-		font-weight: 500;
-		letter-spacing: 0.04em;
-		color: $textSecondary;
-		cursor: pointer;
-		@include transition();
-	}
-
-	&__wr {
-		position: relative;
-	}
-
-	&__field {
-		width: 100%;
-		padding: 11px 16px;
-		background: rgba(255, 255, 255, 0.04);
-		border: 1px solid $border;
-		border-radius: 10px;
-		outline: none;
-		color: $textPrimary;
-		font-family: $firstFont;
-		font-size: 0.9rem;
-		@include transition();
-
-		&::placeholder {
-			color: $textMuted;
-		}
-
-		&:hover {
-			border-color: $borderHover;
-			background: rgba(255, 255, 255, 0.055);
-		}
-
-		&:disabled {
-			opacity: 0.4;
-			pointer-events: none;
-		}
-	}
-
-	&__icon {
-		position: absolute;
-		top: 50%;
-		right: 12px;
-		transform: translateY(-50%);
-		cursor: pointer;
-		color: $textSecondary;
-		line-height: 0;
-		@include transition();
-
-		&:hover { color: $textPrimary; }
-
-		svg { width: 16px; height: 16px; }
-	}
-
-	&__error {
-		font-size: 0.73rem;
-		color: $red;
-	}
-
-	// States
-	&.is-active .ui-input__field {
+	&.is-active .ui-input__field
+	{
 		border-color: $borderFocus;
 		background: rgba(196, 129, 139, 0.04);
 	}
 
-	&.is-active .ui-input__label {
+	&.is-active .ui-input__label
+	{
 		color: $roseGoldLight;
 	}
 
-	&.is-error .ui-input__field {
+	&.is-error .ui-input__field
+	{
 		border-color: rgba(255, 77, 109, 0.5);
 		background: rgba(255, 77, 109, 0.04);
 	}
+}
+
+.ui-input__label
+{
+	font-size: 0.78rem;
+	font-weight: 500;
+	letter-spacing: 0.04em;
+	color: $textSecondary;
+	cursor: pointer;
+	@include transition();
+}
+
+.ui-input__wr
+{
+	position: relative;
+}
+
+.ui-input__field
+{
+	width: 100%;
+	padding: 11px 16px;
+	background: rgba(255, 255, 255, 0.04);
+	border: 1px solid $border;
+	border-radius: 10px;
+	outline: none;
+	color: $textPrimary;
+	font-family: $firstFont;
+	font-size: 0.9rem;
+	@include transition();
+
+	&::placeholder
+	{
+		color: $textMuted;
+	}
+
+	&:hover
+	{
+		border-color: $borderHover;
+		background: rgba(255, 255, 255, 0.055);
+	}
+
+	&:disabled
+	{
+		opacity: 0.4;
+		pointer-events: none;
+	}
+}
+
+.ui-input__icon
+{
+	position: absolute;
+	top: 50%;
+	right: 12px;
+	transform: translateY(-50%);
+	cursor: pointer;
+	color: $textSecondary;
+	line-height: 0;
+	@include transition();
+
+	&:hover { color: $textPrimary; }
+
+	svg { width: 16px; height: 16px; }
+}
+
+.ui-input__error
+{
+	font-size: 0.73rem;
+	color: $red;
 }
 </style>

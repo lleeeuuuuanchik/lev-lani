@@ -1,17 +1,18 @@
 <script setup>
-// ─── Лейаут по умолчанию ─────────────────────────────────────────────────────
-// Оборачивает все страницы кроме /admin/* (у них layout: 'admin').
-// Структура: FallingStars (фоновая анимация) → AppNavbar → <slot> → AppFooter.
-// Через Teleport в body выводятся глобальные оверлеи: прелоадер и confirm-диалог.
+/**
+ * Лейаут по умолчанию: FallingStars → AppNavbar → slot → AppFooter.
+ * Teleport: прелоадер и confirm-диалог в body.
+ */
 
+// variables
 const nuxtApp = useNuxtApp();
 const loading = ref(false);
 
-// Показываем прелоадер при навигации между страницами
 nuxtApp.hook('page:start',  () => loading.value = true);
-nuxtApp.hook('page:finish', () => {
+nuxtApp.hook('page:finish', () =>
+{
 	loading.value = false;
-	getScrollWidth(); // пересчитываем ширину scrollbar после смены страницы
+	getScrollWidth();
 });
 </script>
 
@@ -33,13 +34,15 @@ nuxtApp.hook('page:finish', () => {
 </template>
 
 <style lang="scss">
-.default-layout {
+.default-layout
+{
 	min-height: 100vh;
 	display: flex;
 	flex-direction: column;
+}
 
-	&__main {
-		flex: 1;
-	}
+.default-layout__main
+{
+	flex: 1;
 }
 </style>

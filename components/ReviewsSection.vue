@@ -1,59 +1,63 @@
 <script setup>
-// ─── Секция отзывов — Swiper карусель ─────────────────────────────────────────
-// Отзывы загружаются через GET /api/reviews (только approved=1).
-// Swiper: loop + autoplay 5s + кастомная навигация + pagination dots.
-// Форма добавления отзыва — в <ClientOnly> (Vuelidate требует DOM).
-// Schema.org Review microdata — на каждом слайде.
+/**
+ * Секция отзывов: Swiper-карусель (approved), форма добавления в ClientOnly. Schema.org Review.
+ */
 
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
 import { useToast } from '@/composables/useToast';
 
+// variables
 const { showSuccess, showError } = useToast();
-
+const { reviewsApi, servicesApi } = useApi();
 const modules = [Autoplay, Navigation, Pagination];
-
-const serviceOptions = [
-	{ value: 'Стрижка', label: 'Стрижка' },
-	{ value: 'Окрашивание', label: 'Окрашивание' },
-	{ value: 'Укладка', label: 'Укладка' },
-	{ value: 'Маникюр', label: 'Маникюр' },
-	{ value: 'Брови и ресницы', label: 'Брови и ресницы' },
-	{ value: 'Уход за лицом', label: 'Уход за лицом' },
-];
-
-const { data: reviews, refresh } = await useFetch('/api/reviews');
-
+const { data: services } = servicesApi.getServices();
+const serviceOptions = computed(() =>
+	(services.value ?? []).map((s) => ({ value: s.title, label: s.title })),
+);
+const { data: reviews, refresh } = await reviewsApi.getReviews();
 const showForm = ref(false);
 const loading = ref(false);
 const form = reactive({ author: '', service: '', text: '', rating: 5 });
-
-// Ref на инстанс Swiper — используется для кастомных кнопок навигации
 const swiperInstance = ref(null);
-const onSwiper = (swiper) => { swiperInstance.value = swiper; };
 
 const total = computed(() => reviews.value?.length ?? 0);
 
-const submit = async () => {
+// functions
+const onSwiper = (swiper) => { swiperInstance.value = swiper; };
+
+const submit = async () =>
+{
 	if (!form.author || !form.service || form.text.length < 10) return;
 	loading.value = true;
-	try {
-		await $fetch('/api/reviews', { method: 'POST', body: { ...form } });
+	try
+	{
+		await reviewsApi.submitReview({ ...form });
 		showSuccess('Спасибо за отзыв! Он появится после проверки.');
-		form.author = ''; form.service = ''; form.text = ''; form.rating = 5;
+		form.author = '';
+		form.service = '';
+		form.text = '';
+		form.rating = 5;
 		showForm.value = false;
 		await refresh();
-	} catch {
+	}
+	catch
+	{
 		showError('Не удалось отправить отзыв. Попробуйте позже.');
-	} finally {
+	}
+	finally
+	{
 		loading.value = false;
 	}
 };
 
-const formatDate = (ts) => {
+const formatDate = (ts) =>
+{
 	if (!ts) return '';
 	return new Date(typeof ts === 'number' ? ts * 1000 : ts).toLocaleDateString('ru-RU', {
-		day: 'numeric', month: 'long', year: 'numeric',
+		day: 'numeric',
+		month: 'long',
+		year: 'numeric',
 	});
 };
 

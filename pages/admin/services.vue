@@ -1,10 +1,15 @@
 <script setup>
+/**
+ * CRUD услуг: название, описание, цена, иконка, порядок, активность.
+ */
 import { Scissors, Palette, Wind, Hand, Eye, Sparkles, Star, Flower2, Gem, Heart } from 'lucide-vue-next';
 
 definePageMeta({ middleware: 'auth', layout: 'admin' });
 useSeoMeta({ title: 'Услуги — Lev & Lani Admin' });
 
-const { data: services, refresh } = await useFetch('/api/admin/services');
+// variables
+const { servicesApi } = useApi();
+const { data: services, refresh } = await servicesApi.getAdminServices();
 
 const showForm = ref(false);
 const editingId = ref(null);
@@ -47,24 +52,26 @@ const save = async () => {
 	if (!form.title) return;
 	loading.value = true;
 	try {
-		if (editingId.value) {
-			await $fetch(`/api/admin/services/${editingId.value}`, { method: 'PUT', body: { ...form } });
-		} else {
-			await $fetch('/api/admin/services', { method: 'POST', body: { ...form } });
-		}
+		if (editingId.value)
+			await servicesApi.updateService(editingId.value, { ...form });
+		else
+			await servicesApi.createService({ ...form });
 		showForm.value = false;
 		await refresh();
-	} finally { loading.value = false; }
+	}
+	finally {
+		loading.value = false;
+	}
 };
 
 const toggleActive = async (s) => {
-	await $fetch(`/api/admin/services/${s.id}`, { method: 'PUT', body: { active: s.active ? 0 : 1 } });
+	await servicesApi.toggleServiceActive(s);
 	await refresh();
 };
 
 const remove = async (id) => {
 	if (!confirm('Удалить услугу?')) return;
-	await $fetch(`/api/admin/services/${id}`, { method: 'DELETE' });
+	await servicesApi.deleteService(id);
 	await refresh();
 };
 </script>

@@ -1,9 +1,20 @@
 <script setup>
+/**
+ * Атмосферная секция «Наша философия»: параллакс фона, цитата, счётчики.
+ */
 import { useGsapAnimations } from '@/composables/useGsapAnimations';
 
+// variables
 const { animateParallaxSection } = useGsapAnimations();
+const counters = [
+	{ value: '∞', label: 'возможностей' },
+	{ value: '01', label: 'ваш образ' },
+	{ value: '100%', label: 'индивидуально' },
+];
 
-onMounted(() => {
+// functions
+onMounted(() =>
+{
 	animateParallaxSection('.mood__bg-text', '.mood__content');
 });
 </script>
@@ -91,47 +102,40 @@ onMounted(() => {
 	</section>
 </template>
 
-<script>
-export default {
-	data() {
-		return {
-			counters: [
-				{ value: '∞', label: 'возможностей' },
-				{ value: '01', label: 'ваш образ' },
-				{ value: '100%', label: 'индивидуально' },
-			],
-		};
-	},
-};
-</script>
-
 <style lang="scss">
-.mood {
+.mood
+{
 	position: relative;
 	overflow: hidden;
 	padding: 140px 0;
 	background: $bg;
 
-	@include mq(0, $tablet) {
+	@include mq(0, $tablet)
+	{
 		padding: 80px 0;
 	}
 
-	&::before {
+	&::before
+	{
 		content: '';
 		position: absolute;
-		top: 0; left: 0; right: 0;
+		top: 0;
+		left: 0;
+		right: 0;
 		height: 1px;
 		background: linear-gradient(90deg, transparent, $border 30%, $border 70%, transparent);
 	}
 }
 
-.mood__stars {
+.mood__stars
+{
 	position: absolute;
 	inset: 0;
 	pointer-events: none;
 	z-index: 0;
 
-	&::before {
+	&::before
+	{
 		content: '';
 		position: absolute;
 		top: 0; left: 0;
@@ -157,7 +161,8 @@ export default {
 			1050px 130px 0 0 rgba(196,129,139,0.13);
 	}
 
-	&::after {
+	&::after
+	{
 		content: '';
 		position: absolute;
 		bottom: 0; left: 0;
@@ -197,7 +202,8 @@ export default {
 	pointer-events: none;
 }
 
-.mood__line {
+.mood__line
+{
 	position: absolute;
 	background: linear-gradient(90deg, transparent, rgba(196,129,139,0.08), transparent);
 	height: 1px;
@@ -208,17 +214,21 @@ export default {
 	&--3 { top: 75%; }
 }
 
-.mood__glow {
+.mood__glow
+{
 	position: absolute;
-	width: 600px; height: 300px;
+	width: 600px;
+	height: 300px;
 	border-radius: 50%;
 	background: radial-gradient(ellipse, rgba(196,129,139,0.07) 0%, transparent 70%);
-	top: 50%; left: 50%;
+	top: 50%;
+	left: 50%;
 	transform: translate(-50%, -50%);
 	filter: blur(40px);
 	pointer-events: none;
 
-	&--2 {
+	&--2
+	{
 		width: 320px; height: 180px;
 		background: radial-gradient(ellipse, rgba(232,213,190,0.05) 0%, transparent 70%);
 		top: 20%; left: 75%;
@@ -227,37 +237,48 @@ export default {
 	}
 }
 
-.mood__orbit {
+.mood__orbit
+{
 	position: absolute;
 	border-radius: 50%;
 	border: 1px solid rgba(196,129,139,0.05);
 	pointer-events: none;
-	top: 50%; left: 50%;
+	top: 50%;
+	left: 50%;
 
-	&--1 {
-		width: 700px; height: 700px;
-		margin-top: -350px; margin-left: -350px;
+	&--1
+	{
+		width: 700px;
+		height: 700px;
+		margin-top: -350px;
+		margin-left: -350px;
 	}
 
-	&--2 {
+	&--2
+	{
 		width: 440px; height: 440px;
 		margin-top: -220px; margin-left: -220px;
 		border-color: rgba(232,213,190,0.04);
 	}
 }
 
-.mood__constellation {
+.mood__constellation
+{
 	position: absolute;
 	pointer-events: none;
 	z-index: 0;
 
-	&--left {
-		width: 180px; height: 160px;
-		top: 10%; left: 2%;
+	&--left
+	{
+		width: 180px;
+		height: 160px;
+		top: 10%;
+		left: 2%;
 		opacity: 0.9;
 	}
 
-	&--right {
+	&--right
+	{
 		width: 180px; height: 160px;
 		bottom: 10%; right: 2%;
 		opacity: 0.8;
@@ -265,7 +286,8 @@ export default {
 	}
 }
 
-.mood__content {
+.mood__content
+{
 	position: relative;
 	z-index: 2;
 	display: flex;
@@ -275,7 +297,8 @@ export default {
 	gap: 40px;
 }
 
-.mood__label {
+.mood__label
+{
 	display: flex;
 	align-items: center;
 	gap: 16px;
@@ -286,42 +309,45 @@ export default {
 	color: $roseGold;
 }
 
-.mood__label-line {
+.mood__label-line
+{
 	flex: 1;
 	max-width: 60px;
 	height: 1px;
 	background: linear-gradient(90deg, transparent, rgba(196,129,139,0.4));
 
-	&:last-child {
-		background: linear-gradient(-90deg, transparent, rgba(196,129,139,0.4));
-	}
+	&:last-child { background: linear-gradient(-90deg, transparent, rgba(196,129,139,0.4)); }
 }
 
-.mood__quote {
+.mood__quote
+{
 	font-family: $headingFont;
 	font-size: clamp(2rem, 4.5vw, 3.5rem);
 	font-weight: 300;
 	line-height: 1.15;
 	color: $textPrimary;
 	max-width: 760px;
-
-	em {
-		font-style: italic;
-		background: linear-gradient(120deg, $roseGold 0%, $champagne 60%);
-		-webkit-background-clip: text;
-		-webkit-text-fill-color: transparent;
-		background-clip: text;
-	}
 }
 
-.mood__sub {
+.mood__quote em
+{
+	font-style: italic;
+	background: linear-gradient(120deg, $roseGold 0%, $champagne 60%);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-clip: text;
+}
+
+.mood__sub
+{
 	font-size: 0.92rem;
 	color: $textSecondary;
 	line-height: 1.75;
 	max-width: 400px;
 }
 
-.mood__counters {
+.mood__counters
+{
 	display: flex;
 	gap: 0;
 	border: 1px solid $border;
@@ -329,7 +355,8 @@ export default {
 	overflow: hidden;
 }
 
-.mood__counter {
+.mood__counter
+{
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -337,22 +364,25 @@ export default {
 	padding: 20px 36px;
 	position: relative;
 
-	& + & {
-		&::before {
-			content: '';
-			position: absolute;
-			left: 0; top: 20%; bottom: 20%;
-			width: 1px;
-			background: linear-gradient(180deg, transparent, $border 50%, transparent);
-		}
-	}
-
-	@include mq(0, $tablet) {
+	@include mq(0, $tablet)
+	{
 		padding: 16px 24px;
 	}
 }
 
-.mood__counter-val {
+.mood__counter + .mood__counter::before
+{
+	content: '';
+	position: absolute;
+	left: 0;
+	top: 20%;
+	bottom: 20%;
+	width: 1px;
+	background: linear-gradient(180deg, transparent, $border 50%, transparent);
+}
+
+.mood__counter-val
+{
 	font-family: $headingFont;
 	font-size: 1.8rem;
 	font-weight: 300;
@@ -363,7 +393,8 @@ export default {
 	line-height: 1;
 }
 
-.mood__counter-label {
+.mood__counter-label
+{
 	font-size: 0.72rem;
 	color: $textMuted;
 	letter-spacing: 0.08em;

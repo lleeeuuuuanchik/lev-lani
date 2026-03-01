@@ -12,7 +12,8 @@
 </template>
 
 <style lang="scss">
-.preloader {
+.preloader
+{
 	position: fixed;
 	inset: 0;
 	z-index: 9999;
@@ -24,37 +25,40 @@
 	gap: 18px;
 }
 
-.preloader__gem-wrap {
+.preloader__gem-wrap
+{
 	color: $roseGold;
 	animation: preloader-spin 1.4s ease-in-out infinite;
 	filter: drop-shadow(0 0 12px rgba(196, 129, 139, 0.7));
 }
 
-@keyframes preloader-spin {
-	0%   { transform: rotate(0deg) scale(1);    opacity: 0.85; }
+@keyframes preloader-spin
+{
+	0%   { transform: rotate(0deg) scale(1); opacity: 0.85; }
 	50%  { transform: rotate(180deg) scale(1.3); opacity: 1; }
-	100% { transform: rotate(360deg) scale(1);  opacity: 0.85; }
+	100% { transform: rotate(360deg) scale(1); opacity: 0.85; }
 }
 
-.preloader__name {
+.preloader__name
+{
 	font-family: $headingFont;
 	font-style: italic;
 	font-weight: 300;
 	font-size: 1.3rem;
 	letter-spacing: 0.12em;
 	color: $textMuted;
-
-	em {
-		font-style: normal;
-		background: linear-gradient(110deg, $roseGold, $champagne);
-		-webkit-background-clip: text;
-		-webkit-text-fill-color: transparent;
-		background-clip: text;
-		padding: 0 4px;
-	}
 }
 
-// Transition
+.preloader__name em
+{
+	font-style: normal;
+	background: linear-gradient(110deg, $roseGold, $champagne);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-clip: text;
+	padding: 0 4px;
+}
+
 .preloader-enter-active { transition: opacity 0.2s ease; }
 .preloader-leave-active { transition: opacity 0.3s ease; }
 .preloader-enter-from,

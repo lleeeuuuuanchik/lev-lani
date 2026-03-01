@@ -1,10 +1,16 @@
 <script setup>
+/**
+ * Политика конфиденциальности. SEO + JSON-LD хлебные крошки.
+ */
+
 import { useGsapAnimations } from '@/composables/useGsapAnimations';
 import { useBreadcrumbJsonLd } from '@/composables/useSeoJsonLd';
 
+// variables
 const SITE_URL = 'https://levlani.ru';
 const PAGE_URL = `${SITE_URL}/privacy`;
 
+// meta
 useSeoMeta({
 	title: 'Политика конфиденциальности — Lev & Lani',
 	description: 'Политика конфиденциальности салона красоты Lev & Lani во Владикавказе. Информация о сборе, хранении и защите персональных данных.',
@@ -14,7 +20,7 @@ useSeoMeta({
 	ogDescription: 'Политика конфиденциальности салона красоты Lev & Lani во Владикавказе.',
 	ogType:        'website',
 	ogUrl:         PAGE_URL,
-	ogImage:       `${SITE_URL}/og-image.jpg`,
+	ogImage:       `${SITE_URL}/og-image.svg`,
 	ogImageWidth:  '1200',
 	ogImageHeight: '630',
 	ogImageAlt:    'Lev & Lani Beauty Studio — Владикавказ',
@@ -23,7 +29,7 @@ useSeoMeta({
 	twitterCard:        'summary_large_image',
 	twitterTitle:       'Политика конфиденциальности — Lev & Lani',
 	twitterDescription: 'Политика конфиденциальности салона красоты Lev & Lani во Владикавказе.',
-	twitterImage:       `${SITE_URL}/og-image.jpg`,
+	twitterImage:       `${SITE_URL}/og-image.svg`,
 });
 
 // Канонический URL — предотвращает дубли при ?utm= параметрах
@@ -37,7 +43,9 @@ useBreadcrumbJsonLd([
 
 const { animateFadeInUp } = useGsapAnimations();
 
-onMounted(async () => {
+// functions (onMounted — GSAP только на клиенте)
+onMounted(async () =>
+{
 	if (!import.meta.client) return;
 	const { gsap } = await import('gsap');
 	const { ScrollTrigger } = await import('gsap/ScrollTrigger');
@@ -227,7 +235,8 @@ onMounted(async () => {
 </template>
 
 <style lang="scss">
-.privacy-page {
+.privacy-page
+{
 	background: $bg;
 	min-height: 100vh;
 	padding-top: 120px;
@@ -236,14 +245,15 @@ onMounted(async () => {
 	overflow: hidden;
 }
 
-// ─── Cosmic bg ────────────────────────────────────────────────
-.privacy__stars {
+.privacy__stars
+{
 	position: fixed;
 	inset: 0;
 	pointer-events: none;
 	z-index: 0;
 
-	&::after {
+	&::after
+	{
 		content: '';
 		position: absolute;
 		top: 0; left: 0;
@@ -274,50 +284,58 @@ onMounted(async () => {
 	}
 }
 
-.privacy__nebula {
+.privacy__nebula
+{
 	position: fixed;
 	border-radius: 50%;
 	filter: blur(80px);
 	pointer-events: none;
 	z-index: 0;
 
-	&--1 {
+	&--1
+	{
 		width: 500px; height: 300px;
 		background: radial-gradient(ellipse, rgba(196,129,139,0.07) 0%, transparent 70%);
 		top: -80px; right: -60px;
 	}
 
-	&--2 {
+	&--2
+	{
 		width: 400px; height: 250px;
 		background: radial-gradient(ellipse, rgba(232,213,190,0.04) 0%, transparent 70%);
 		bottom: 20%; left: -80px;
 	}
 
-	&--3 {
+	&--3
+	{
 		width: 300px; height: 180px;
 		background: radial-gradient(ellipse, rgba(196,129,139,0.05) 0%, transparent 70%);
 		top: 50%; right: 5%;
 	}
 }
 
-.privacy__constellation {
+.privacy__constellation
+{
 	position: fixed;
 	pointer-events: none;
 	z-index: 0;
 	opacity: 0.9;
 
-	&--tr {
+	&--tr
+	{
 		top: 0; right: 0;
 		width: 220px; height: 180px;
 	}
 
-	&--bl {
+	&--bl
+	{
 		bottom: 0; left: 0;
 		width: 180px; height: 160px;
 	}
 }
 
-.privacy__orbit {
+.privacy__orbit
+{
 	position: fixed;
 	width: 700px; height: 700px;
 	border-radius: 50%;
@@ -329,18 +347,20 @@ onMounted(async () => {
 	z-index: 0;
 }
 
-// ─── Content ──────────────────────────────────────────────────
-.privacy__inner {
+.privacy__inner
+{
 	max-width: 760px;
 	position: relative;
 	z-index: 1;
 }
 
-.privacy__back {
+.privacy__back
+{
 	margin-bottom: 48px;
 }
 
-.privacy__back-link {
+.privacy__back-link
+{
 	display: inline-flex;
 	align-items: center;
 	gap: 8px;
@@ -349,23 +369,26 @@ onMounted(async () => {
 	text-decoration: none;
 	@include transition();
 
-	&:hover {
+	&:hover
+	{
 		color: $roseGoldLight;
-
-		svg { transform: translateX(-3px); }
 	}
+
+	&:hover svg { transform: translateX(-3px); }
 
 	svg { @include transition(); }
 }
 
-.privacy__header {
+.privacy__header
+{
 	margin-bottom: 64px;
 	display: flex;
 	flex-direction: column;
 	gap: 16px;
 }
 
-.privacy__title {
+.privacy__title
+{
 	font-family: $headingFont;
 	font-size: clamp(2.4rem, 5vw, 3.5rem);
 	font-weight: 300;
@@ -374,7 +397,8 @@ onMounted(async () => {
 	margin: 0;
 }
 
-.privacy__title-em {
+.privacy__title-em
+{
 	font-style: italic;
 	background: linear-gradient(120deg, $roseGold 0%, $champagne 60%);
 	-webkit-background-clip: text;
@@ -382,47 +406,51 @@ onMounted(async () => {
 	background-clip: text;
 }
 
-.privacy__date {
+.privacy__date
+{
 	font-size: 0.8rem;
 	color: $textMuted;
 	letter-spacing: 0.04em;
 }
 
-.privacy__content {
+.privacy__content
+{
 	display: flex;
 	flex-direction: column;
 	gap: 0;
 }
 
-.privacy__section {
+.privacy__section
+{
 	padding: 36px 0;
 	border-bottom: 1px solid $border;
 
 	&:first-child { padding-top: 0; }
 	&:last-child { border-bottom: none; }
-
-	p {
-		font-size: 0.93rem;
-		color: $textSecondary;
-		line-height: 1.8;
-		margin: 0 0 12px;
-
-		&:last-child { margin-bottom: 0; }
-	}
 }
 
-.privacy__h2 {
+.privacy__section p
+{
+	font-size: 0.93rem;
+	color: $textSecondary;
+	line-height: 1.8;
+	margin: 0 0 12px;
+
+	&:last-child { margin-bottom: 0; }
+}
+
+.privacy__h2
+{
 	font-family: $headingFont;
 	font-size: 1.3rem;
 	font-weight: 400;
 	color: $textPrimary;
 	margin: 0 0 18px;
-
-	// Subtle left accent
 	position: relative;
 	padding-left: 16px;
 
-	&::before {
+	&::before
+	{
 		content: '';
 		position: absolute;
 		left: 0; top: 0.15em;
@@ -433,47 +461,53 @@ onMounted(async () => {
 	}
 }
 
-.privacy__list {
+.privacy__list
+{
 	list-style: none;
 	padding: 0;
 	margin: 0 0 14px;
 	display: flex;
 	flex-direction: column;
 	gap: 8px;
+}
 
-	li {
-		font-size: 0.93rem;
-		color: $textSecondary;
-		line-height: 1.7;
-		padding-left: 18px;
-		position: relative;
+.privacy__list li
+{
+	font-size: 0.93rem;
+	color: $textSecondary;
+	line-height: 1.7;
+	padding-left: 18px;
+	position: relative;
 
-		&::before {
-			content: '';
-			position: absolute;
-			left: 0; top: 10px;
-			width: 5px; height: 5px;
-			border-radius: 50%;
-			background: $roseGold;
-			box-shadow: 0 0 6px rgba(196,129,139,0.4);
-		}
+	&::before
+	{
+		content: '';
+		position: absolute;
+		left: 0; top: 10px;
+		width: 5px; height: 5px;
+		border-radius: 50%;
+		background: $roseGold;
+		box-shadow: 0 0 6px rgba(196,129,139,0.4);
 	}
 }
 
-.privacy__contacts {
+.privacy__contacts
+{
 	display: flex;
 	flex-direction: column;
 	gap: 10px;
 	margin-top: 16px;
 }
 
-.privacy__contact-item {
+.privacy__contact-item
+{
 	display: flex;
 	align-items: baseline;
 	gap: 12px;
 }
 
-.privacy__contact-label {
+.privacy__contact-label
+{
 	font-size: 0.76rem;
 	font-weight: 600;
 	letter-spacing: 0.1em;
@@ -482,7 +516,8 @@ onMounted(async () => {
 	min-width: 110px;
 }
 
-.privacy__contact-value {
+.privacy__contact-value
+{
 	font-size: 0.92rem;
 	color: $textPrimary;
 	text-decoration: none;

@@ -1,27 +1,35 @@
 <script setup>
-definePageMeta({ layout: false });
+	/**
+	 * Страница входа в админку. Сравнение с NUXT_ADMIN_EMAIL / NUXT_ADMIN_PASSWORD.
+	 */
+	definePageMeta({ layout: false });
+	useSeoMeta({ title: 'Вход — Lev & Lani Admin', robots: 'noindex, nofollow' });
 
-useSeoMeta({ title: 'Вход — Lev & Lani Admin', robots: 'noindex, nofollow' });
+	// variables
+	const { authApi } = useApi();
+	const form = reactive({ email: '', password: '' });
+	const error = ref('');
+	const loading = ref(false);
 
-const form = reactive({ email: '', password: '' });
-const error = ref('');
-const loading = ref(false);
-
-const submit = async () => {
-	error.value = '';
-	loading.value = true;
-	try {
-		await $fetch('/api/auth/login', {
-			method: 'POST',
-			body: form,
-		});
-		await navigateTo('/admin');
-	} catch {
-		error.value = 'Неверный email или пароль';
-	} finally {
-		loading.value = false;
-	}
-};
+	// functions
+	const submit = async () =>
+	{
+		error.value = '';
+		loading.value = true;
+		try
+		{
+			await authApi.login(form);
+			await navigateTo('/admin');
+		}
+		catch
+		{
+			error.value = 'Неверный email или пароль';
+		}
+		finally
+		{
+			loading.value = false;
+		}
+	};
 </script>
 
 <template>
@@ -83,7 +91,8 @@ const submit = async () => {
 </template>
 
 <style lang="scss">
-.al {
+.al
+{
 	min-height: 100vh;
 	display: flex;
 	align-items: center;
@@ -94,26 +103,30 @@ const submit = async () => {
 	overflow: hidden;
 }
 
-.al__orb {
+.al__orb
+{
 	position: absolute;
 	border-radius: 50%;
 	filter: blur(80px);
 	pointer-events: none;
 
-	&--1 {
+	&--1
+	{
 		width: 500px; height: 500px;
 		background: radial-gradient(circle, rgba(196,129,139,0.08) 0%, transparent 65%);
 		top: -120px; right: -80px;
 	}
 
-	&--2 {
+	&--2
+	{
 		width: 300px; height: 300px;
 		background: radial-gradient(circle, rgba(232,213,190,0.05) 0%, transparent 65%);
 		bottom: -60px; left: -40px;
 	}
 }
 
-.al__card {
+.al__card
+{
 	width: 100%;
 	max-width: 420px;
 	background: rgba(255,255,255,0.025);
@@ -127,21 +140,25 @@ const submit = async () => {
 	z-index: 1;
 	backdrop-filter: blur(20px);
 
-	@include mq(0, $tablet) {
+	@include mq(0, $tablet)
+	{
 		padding: 36px 24px 28px;
 	}
 }
 
-.al__logo {
+.al__logo
+{
 	display: flex;
 	justify-content: center;
 }
 
-.al__logo-link {
+.al__logo-link
+{
 	text-decoration: none;
 }
 
-.al__head {
+.al__head
+{
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -149,7 +166,8 @@ const submit = async () => {
 	text-align: center;
 }
 
-.al__title {
+.al__title
+{
 	font-family: $headingFont;
 	font-size: 1.7rem;
 	font-weight: 300;
@@ -157,19 +175,22 @@ const submit = async () => {
 	margin: 0;
 }
 
-.al__sub {
+.al__sub
+{
 	font-size: 0.84rem;
 	color: $textMuted;
 	margin: 0;
 }
 
-.al__form {
+.al__form
+{
 	display: flex;
 	flex-direction: column;
 	gap: 14px;
 }
 
-.al__error {
+.al__error
+{
 	display: flex;
 	align-items: center;
 	gap: 8px;
@@ -178,10 +199,11 @@ const submit = async () => {
 	border: 1px solid rgba(255,77,109,0.25);
 	border-radius: 10px;
 	font-size: 0.84rem;
-	color: #ff4d6d;
+	color: $red;
 }
 
-.al__btn {
+.al__btn
+{
 	width: 100%;
 	justify-content: center;
 	border-radius: 10px !important;
@@ -189,21 +211,32 @@ const submit = async () => {
 	margin-top: 4px;
 }
 
-.al__note {
+.al__note
+{
 	text-align: center;
 	margin: 0;
 }
 
-.al__note-link {
+.al__note-link
+{
 	font-size: 0.78rem;
 	color: $textMuted;
 	text-decoration: none;
 	@include transition();
+
 	&:hover { color: $roseGoldLight; }
 }
 
 .fade-err-enter-active,
-.fade-err-leave-active { transition: opacity 0.2s ease, transform 0.2s ease; }
+.fade-err-leave-active
+{
+	transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
 .fade-err-enter-from,
-.fade-err-leave-to { opacity: 0; transform: translateY(-4px); }
+.fade-err-leave-to
+{
+	opacity: 0;
+	transform: translateY(-4px);
+}
 </style>

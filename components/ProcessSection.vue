@@ -1,8 +1,12 @@
 <script setup>
+/**
+ * Секция «Как мы работаем»: 4 шага. Анимация при скролле.
+ */
+
 import { useGsapAnimations } from '@/composables/useGsapAnimations';
 
+// variables
 const { animateScrollCards, animateSectionTitle } = useGsapAnimations();
-
 const steps = [
 	{
 		num: '01',
@@ -30,7 +34,8 @@ const steps = [
 	},
 ];
 
-onMounted(() => {
+onMounted(() =>
+{
 	animateSectionTitle('.process__head');
 	animateScrollCards('.process__card');
 });

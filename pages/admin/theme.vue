@@ -1,7 +1,11 @@
 <script setup>
+/**
+ * Выбор цветовой темы сайта (дублирует кнопку палитры в navbar).
+ */
 definePageMeta({ middleware: 'auth', layout: 'admin' });
 useSeoMeta({ title: 'Тема сайта — Lev & Lani Admin' });
 
+// variables
 const { THEMES, currentTheme, applyTheme } = useTheme();
 </script>
 
@@ -62,14 +66,16 @@ const { THEMES, currentTheme, applyTheme } = useTheme();
 </template>
 
 <style lang="scss">
-.theme-grid {
+.theme-grid
+{
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
 	gap: 16px;
 	margin-bottom: 24px;
 }
 
-.theme-card {
+.theme-card
+{
 	background: rgba(255,255,255,0.03);
 	border: 1px solid $border;
 	border-radius: 16px;
@@ -84,7 +90,8 @@ const { THEMES, currentTheme, applyTheme } = useTheme();
 	&--active { border-color: rgba(196,129,139,0.5); box-shadow: 0 0 20px rgba(196,129,139,0.12); }
 }
 
-.theme-card__preview {
+.theme-card__preview
+{
 	height: 110px;
 	padding: 16px;
 	display: flex;
@@ -92,37 +99,79 @@ const { THEMES, currentTheme, applyTheme } = useTheme();
 	gap: 12px;
 }
 
-.theme-card__preview-bg { display: flex; gap: 6px; align-items: center; }
-
-.theme-card__swatch {
-	border-radius: 4px;
-	&--accent    { width: 32px; height: 14px; }
-	&--champagne { width: 24px; height: 14px; opacity: 0.7; }
-	&--dark      { width: 16px; height: 14px; background: #080a0c; border: 1px solid rgba(255,255,255,0.1); }
+.theme-card__preview-bg
+{
+	display: flex;
+	gap: 6px;
+	align-items: center;
 }
 
-.theme-card__preview-ui { display: flex; flex-direction: column; gap: 6px; flex: 1; }
-.theme-card__preview-bar { width: 100%; height: 4px; border-radius: 2px; opacity: 0.5; }
-.theme-card__preview-text { display: flex; flex-direction: column; gap: 4px; }
-.theme-card__preview-line {
+.theme-card__swatch
+{
+	border-radius: 4px;
+
+	&--accent { width: 32px; height: 14px; }
+	&--champagne { width: 24px; height: 14px; opacity: 0.7; }
+	&--dark { width: 16px; height: 14px; background: $bg; border: 1px solid rgba(255,255,255,0.1); }
+}
+
+.theme-card__preview-ui
+{
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	flex: 1;
+}
+
+.theme-card__preview-bar
+{
+	width: 100%;
+	height: 4px;
+	border-radius: 2px;
+	opacity: 0.5;
+}
+
+.theme-card__preview-text
+{
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.theme-card__preview-line
+{
 	height: 5px;
 	background: rgba(255,255,255,0.12);
 	border-radius: 2px;
 	width: 100%;
+
 	&--short { width: 65%; }
 }
-.theme-card__preview-btn { width: 48px; height: 10px; border-radius: 3px; opacity: 0.8; }
 
-.theme-card__check {
-	position: absolute;
-	top: 10px; right: 10px;
-	width: 24px; height: 24px;
-	border-radius: 50%;
-	background: rgba(196,129,139,0.9);
-	display: flex; align-items: center; justify-content: center;
+.theme-card__preview-btn
+{
+	width: 48px;
+	height: 10px;
+	border-radius: 3px;
+	opacity: 0.8;
 }
 
-.theme-card__info {
+.theme-card__check
+{
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	width: 24px;
+	height: 24px;
+	border-radius: 50%;
+	background: rgba(196,129,139,0.9);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.theme-card__info
+{
 	padding: 14px 16px;
 	border-top: 1px solid $border;
 	display: flex;
@@ -130,10 +179,21 @@ const { THEMES, currentTheme, applyTheme } = useTheme();
 	gap: 4px;
 }
 
-.theme-card__name { font-size: 0.88rem; font-weight: 500; color: $textPrimary; }
-.theme-card__desc { font-size: 0.74rem; color: $textMuted; }
+.theme-card__name
+{
+	font-size: 0.88rem;
+	font-weight: 500;
+	color: $textPrimary;
+}
 
-.theme-note {
+.theme-card__desc
+{
+	font-size: 0.74rem;
+	color: $textMuted;
+}
+
+.theme-note
+{
 	display: flex;
 	align-items: flex-start;
 	gap: 8px;
@@ -144,6 +204,11 @@ const { THEMES, currentTheme, applyTheme } = useTheme();
 	background: rgba(255,255,255,0.02);
 	border: 1px solid $border;
 	border-radius: 10px;
-	svg { flex-shrink: 0; margin-top: 2px; }
+}
+
+.theme-note svg
+{
+	flex-shrink: 0;
+	margin-top: 2px;
 }
 </style>

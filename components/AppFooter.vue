@@ -1,15 +1,18 @@
 <script setup>
-// ─── Футер сайта ──────────────────────────────────────────────────────────────
-// 3-колоночная навигация + брендовый блок с логотипом и соцсетями.
-// Услуги берутся из /api/services (SQLite). Год динамический.
+/**
+ * Футер: 3 колонки навигации + бренд (логотип, соцсети). Услуги из API.
+ */
 
-const scrollTo = (id) => {
+// variables
+const year = new Date().getFullYear();
+const { servicesApi } = useApi();
+const { data: services } = servicesApi.getServices();
+
+// functions
+const scrollTo = (id) =>
+{
 	document.querySelector(id)?.scrollIntoView({ behavior: 'smooth' });
 };
-
-const year = new Date().getFullYear();
-
-const { data: services } = useFetch('/api/services', { default: () => [] });
 </script>
 
 <template>

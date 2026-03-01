@@ -15,31 +15,36 @@
 </template>
 
 <style lang="scss">
-.logo-mark {
+.logo-mark
+{
 	display: inline-flex;
 	align-items: center;
 	gap: 8px;
 }
 
-.logo-mark__star {
+.logo-mark__star
+{
 	color: $roseGold;
 	filter: drop-shadow(0 0 5px rgba(196, 129, 139, 0.65));
 	flex-shrink: 0;
 	animation: logo-twinkle 4s ease-in-out infinite;
 }
 
-@keyframes logo-twinkle {
-	0%, 100% { opacity: 0.7;  transform: scale(1)    rotate(0deg); }
-	50%       { opacity: 1;   transform: scale(1.15) rotate(22deg); }
+@keyframes logo-twinkle
+{
+	0%, 100% { opacity: 0.7; transform: scale(1) rotate(0deg); }
+	50% { opacity: 1; transform: scale(1.15) rotate(22deg); }
 }
 
-.logo-mark__body {
+.logo-mark__body
+{
 	display: flex;
 	flex-direction: column;
 	gap: 1px;
 }
 
-.logo-mark__name {
+.logo-mark__name
+{
 	display: flex;
 	align-items: center;
 	gap: 2px;
@@ -51,12 +56,14 @@
 	line-height: 1.25;
 }
 
-.logo-mark__lev {
+.logo-mark__lev
+{
 	color: $champagne;
-	font-family: "Cormorant Garamond", Georgia, serif;
+	font-family: $headingFont;
 }
 
-.logo-mark__amp {
+.logo-mark__amp
+{
 	font-size: 0.95rem;
 	font-weight: 200;
 	background: linear-gradient(110deg, $roseGold 0%, $champagne 100%);
@@ -66,16 +73,18 @@
 	padding: 0 2px;
 }
 
-.logo-mark__lani {
+.logo-mark__lani
+{
 	background: linear-gradient(110deg, $champagne 0%, $roseGoldLight 100%);
 	-webkit-background-clip: text;
 	-webkit-text-fill-color: transparent;
 	background-clip: text;
 	padding-right: 4px;
-	font-family: "Cormorant Garamond", Georgia, serif;
+	font-family: $headingFont;
 }
 
-.logo-mark__sub {
+.logo-mark__sub
+{
 	font-size: 0.43rem;
 	font-weight: 700;
 	letter-spacing: 0.26em;
